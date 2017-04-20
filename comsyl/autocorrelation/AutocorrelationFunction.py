@@ -31,7 +31,6 @@ __date__ = "20/04/2017"
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrix
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
 from comsyl.autocorrelation.DegreeOfCoherence import DegreeOfCoherence
-from comsyl.autocorrelation.WignerFunction import Wignerfunction
 from comsyl.math.Twoform import Twoform
 
 __author__ = 'mglass'
@@ -40,14 +39,6 @@ from comsyl.waveoptics.Wavefront import NumpyWavefront, SRWWavefront
 from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity
 
-from comsyl.comparisons.GSMComparer import GSMComparer
-from comsyl.comparisons.SeparationComparer import SeparationComparer
-
-
-try:
-    from comsyl.math.utils import plotSurface, plot
-except:
-    pass
 
 from BeamlineComponents.Source.Undulator import Undulator
 
@@ -81,7 +72,6 @@ class AutocorrelationFunction(object):
     def _setTwoform(self, twoform):
         self._twoform = twoform
         self._degree_of_coherence = DegreeOfCoherence(self._twoform)
-        self._wigner_function = Wignerfunction(self._twoform, self._wavefront.wavenumbers()[0])
 
     def referenceWavefront(self):
         return self._wavefront
