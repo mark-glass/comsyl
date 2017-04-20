@@ -1,0 +1,55 @@
+# coding: utf-8
+# /*##########################################################################
+#
+# Copyright (c) 2017 European Synchrotron Radiation Facility
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# ###########################################################################*/
+__authors__ = ["M Glass - ESRF ISDD Advanced Analysis and Modelling"]
+__license__ = "MIT"
+__date__ = "20/04/2017"
+
+
+
+import numpy as np
+from comsyl.parallel.DistributionPlan import DistributionPlan
+
+class DistributionPlanPETSc(DistributionPlan):
+    def __init__(self, communicator, petsc_object):
+
+        blocks = petsc_object.getOwnershipRanges()
+
+        t = []
+        for i_block in range(len(blocks)-1):
+            t.append(np.arange(blocks[i_block], blocks[i_block + 1]))
+
+        self._rows_for_rank = np.array(t)
+
+        if "Vec" in str(type(petsc_object)):
+            n_rows = petsc_object.getSizes()[1]
+            n_columns = petsc_object.getSizes()[1]
+        else:
+            n_rows = petsc_object.getSizes()[0][1]
+            n_columns = petsc_object.getSizes()[1][1]
+
+        DistributionPlan.__init__(self, communicator=communicator, n_rows=n_rows, n_columns=n_columns)
+
+    def _rowsForRank(self):
+        return self._rows_for_rank
