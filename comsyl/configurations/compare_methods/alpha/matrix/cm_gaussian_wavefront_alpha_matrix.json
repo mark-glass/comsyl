@@ -1,0 +1,8 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/gaussian_wavefront_alpha.json",
+        "optional/use_two_step_method": "false",
+        "optional/do_not_use_convolutions": "false",
+        "sampling_factor": 1.5
+    }
+}

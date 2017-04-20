@@ -1,0 +1,12 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/delta_u18_2m_1h.json",
+        "beam_energies": 0,
+        "optional/use_two_step_method": "false",
+        "optional/do_not_use_convolutions": "false",
+        "sampling_factor": 2.0,
+        "optional/convergence_series_start": 0.5,
+        "optional/convergence_series_length": 4,
+        "number_modes": 40
+    }
+}

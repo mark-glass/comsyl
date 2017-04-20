@@ -1,0 +1,6 @@
+{
+    "patch": {
+        "source": "configurations/compare_energy_spread/u18_1m_1h.json",
+        "lattice_name": "new_es14"
+    }
+}

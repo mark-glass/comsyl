@@ -1,0 +1,16 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/low_beta_u18_2m_1h.json",
+        "beam_energies": 0,
+        "sampling_factor": 5.1,
+        "number_modes": 2500,
+        "source_wavefront/minimal_size_vertical": 8e-05,
+        "source_wavefront/maximal_size_vertical": 8e-05,
+        "source_wavefront/minimal_size_horizontal": 16e-05,
+        "source_wavefront/maximal_size_horizontal": 16e-05,
+        "optional/use_two_step_method": "true",
+        "optional/do_not_use_convolutions": "false",
+        "optional/sampling_factor_divisor_vertical": 1.0,
+        "optional/two_step_divergence_method": "quick"
+    }
+}

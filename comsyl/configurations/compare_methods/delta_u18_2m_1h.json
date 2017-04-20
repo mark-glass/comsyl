@@ -1,0 +1,29 @@
+{
+    "lattice_name": "delta",
+    "undulator_name": "esrf_u18_2m",
+    "sampling_factor": 8.0,
+    "beam_energies": 0,
+    "number_modes": 4,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 10e-05,
+        "minimal_size_vertical": 10e-05,
+        "maximal_size_vertical": 10e-05,
+        "maximal_size_horizontal": 10e-05
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 5e-05,
+        "minimal_size_vertical": 5e-05,
+        "maximal_size_vertical": 5e-05,
+        "maximal_size_horizontal": 5e-05
+    },
+    "optional": {
+        "tag": "",
+        "use_two_step_method": "true",
+        "virtual_source_position": "entrance",
+        "do_not_use_convolutions": "false",
+        "do_convergence_series": "true",
+        "convergence_series_start": 1.0,
+        "convergence_series_length": 8
+    }
+}

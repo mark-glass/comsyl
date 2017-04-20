@@ -1,0 +1,24 @@
+{
+    "lattice_name": "new",
+    "undulator_name": "esrf_u18_4m",
+    "sampling_factor": 2.5,
+    "beam_energies": 61,
+    "number_modes": 500,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 15e-05,
+        "minimal_size_vertical": 15e-05,
+        "maximal_size_vertical": 15e-05,
+        "maximal_size_horizontal": 15e-05
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 16e-05,
+        "minimal_size_vertical": 11e-05,
+        "maximal_size_vertical": 11e-05,
+        "maximal_size_horizontal": 16e-05
+    },
+    "optional": {
+        "tag": "",
+        "virtual_source_position": "entrance"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/new_alpha_u18_2m_1h.json",
+        "optional/use_two_step_method": "false",
+        "optional/do_not_use_convolutions": "false",
+        "sampling_factor": 1.5
+    }
+}

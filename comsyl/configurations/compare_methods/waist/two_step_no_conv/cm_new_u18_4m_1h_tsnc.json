@@ -1,0 +1,7 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/new_u18_4m_1h.json",
+        "optional/use_two_step_method": "true",
+        "optional/do_not_use_convolutions": "true"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "patch": {
+        "source": "configurations/compare_methods/gaussian_wavefront.json",
+        "beam_energies": 0,
+        "optional/use_two_step_method": "true",
+        "optional/do_not_use_convolutions": "true"
+    }
+}

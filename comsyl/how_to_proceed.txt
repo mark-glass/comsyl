@@ -1,0 +1,23 @@
+0. Set up configuration file. A default/example configuration file is created by "python3 AutocorrelationSimulatorConfiguration.py"
+in the autocorrelation subdirectory. Start decomposition with "python3 calculateAutocorrelation.py %CONFIGURATIONFILENAME%".
+
+1. Choose x and y grid size of undulator exit wavefront large enough to capture the entire central cone. The wavefront must be almost zero
+at the boundaries of the grid. If there are strong peaks increase sampling point density.
+
+2. Choose x and y grid size of the wavefront at the source large enough to account for zero padding in convolution.
+If there are strong peaks increase sampling point density.
+
+3. Choose x and y grid size of the wavefront at the source large enough to see the real space projection of the electron density go to zero.
+If there are strong peaks increase sampling point density.
+
+4. Look at the convoluted intensity at the source. If it has peaks/edge try increasing sampling point density and make sure the undulator
+exit wavefront is calculated on a sufficiently large grid. Otherwise boundary artefacts could have been folded in to produce edges.
+
+5. Look at the (first) modes. They should be smooth. Otherwise increase sampling point density. And they should go to zero.
+
+7. Check that relative eigenvalue spectrum does not change drastically with further increase of sampling points. Absolute eigenvalues are
+allowed to change though.
+
+6. Propagate the mode. Does this look reasonable. Usually they just spread in realspace.
+
+....to be continued

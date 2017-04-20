@@ -1,0 +1,31 @@
+{
+    "undulator_name": "esrf_u18_1m",
+    "sampling_factor": 1.5,
+    "beam_energies": 27,
+    "number_modes": 1500,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 8.5e-05,
+        "minimal_size_vertical": 8.5e-05,
+        "maximal_size_vertical": 8.5e-05,
+        "maximal_size_horizontal": 8.5e-05
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 16e-05,
+        "minimal_size_vertical": 6e-05,
+        "maximal_size_vertical": 6e-05,
+        "maximal_size_horizontal": 16e-05
+    },
+    "optional": 
+    {
+        "number_modes_first_step": 3000,
+        "tag": "",
+        "use_two_step_method": "true",
+        "virtual_source_position": "entrance",
+        "two_step_divergence_method": "quick",
+        "do_not_use_convolutions": "false",
+        "do_convergence_series": "true",
+        "convergence_series_start": 1.0,
+        "convergence_series_length": 2
+    }
+}

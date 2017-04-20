@@ -1,0 +1,29 @@
+{
+    "lattice_name": "high_beta",
+    "undulator_name": "esrf_u18_2m",
+    "sampling_factor": 2.0,
+    "beam_energies": 51,
+    "number_modes": 4000,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 8.5e-05,
+        "minimal_size_vertical": 8.5e-05,
+        "maximal_size_vertical": 8.5e-05,
+        "maximal_size_horizontal": 8.5e-05
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 150e-05,
+        "minimal_size_vertical": 6e-05,
+        "maximal_size_vertical": 6e-05,
+        "maximal_size_horizontal": 150e-05
+    },
+    "optional": {
+        "tag": "",
+        "filename": "",
+        "virtual_source_position": "entrance",
+        "use_two_step_method": "true",
+        "do_not_use_convolutions": "false",
+        "number_modes_first_step": 5500,
+        "two_step_divergence_method": "quick"
+    }
+}
