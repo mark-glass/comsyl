@@ -34,6 +34,7 @@ from comsyl.math.TwoformVectors import TwoformVectorsEigenvectors
 from comsyl.math.utils import trapez2D
 from comsyl.math.Interpolation import coveredInterpolation
 
+# Saves the eigenvalues and the eigenvectors
 class Twoform(object):
     def __init__(self, coordinates_x, coordinates_y, diagonal_elements, eigenvalues, twoform_vectors):
         self._coordinates_x = coordinates_x

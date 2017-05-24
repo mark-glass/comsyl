@@ -189,7 +189,7 @@ class AutocorrelationFunction(object):
         mode_distribution = self._twoform.eigenvalues()/self.trace()
         return mode_distribution
 
-    def energy(self):
+    def photonEnergy(self):
         return self._energy
 
     def electronBeamEnergy(self):
@@ -283,7 +283,7 @@ class AutocorrelationFunction(object):
         data_dict={"sigma_matrix": self._sigma_matrix.asNumpyArray(),
                    "undulator": undulator_as_numpy_array(self._undulator),
                    "detuning_parameter": np.array([self._detuning_parameter]),
-                   "energy": np.array([self.energy()]),
+                   "energy": np.array([self.photonEnergy()]),
                    "electron_beam_energy": np.array([self.electronBeamEnergy()]),
                    "wavefront_0": self._wavefront.asNumpyArray()[0],
                    "wavefront_1": self._wavefront.asNumpyArray()[1],
