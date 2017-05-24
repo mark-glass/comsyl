@@ -191,7 +191,7 @@ class AutocorrelationSimulator(object):
                                                  sigma_dd = electron_beam._energy_spread,
                                                  )
 
-        resonance_energy = int(undulator.resonanceEnergy(electron_beam.gamma(), 0, 0))
+        resonance_energy = int(undulator.resonance_energy(electron_beam.gamma(), 0, 0))
         energy = resonance_energy*configuration.detuningParameter()
 
         if configuration.virtualSourcePosition() == "":

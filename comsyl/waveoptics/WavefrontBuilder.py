@@ -60,7 +60,7 @@ class WavefrontBuilder(object):
             adapter._initial_z = 0.0
             raise NotImplementedError("CENTER position might need correction. Not yet implemented.")
         elif self._source_position == VIRTUAL_SOURCE_ENTRANCE:
-            adapter._initial_z = self._undulator.periodLength()*3 + self._undulator.length() / 2.0
+            adapter._initial_z = self._undulator.period_length()*3 + self._undulator.length() / 2.0
         else:
             raise NotImplementedError("Source position %s" % self._source_position)
 
@@ -68,7 +68,7 @@ class WavefrontBuilder(object):
         adapter = SRWAdapter()
         adapter.setSamplingFactor(self._sampling_factor)
 
-        max_theta_x = self._undulator.gaussianCentralConeDivergence(electron_beam.gamma()) * 3.0
+        max_theta_x = self._undulator.gaussian_central_cone_aperture(electron_beam.gamma(),n=1) * 3.0
         z = self._undulator.length() + z_offset
 
         min_dimension_x_theta = 1.0 * self._min_dimension_x / z * np.sqrt(2.0)

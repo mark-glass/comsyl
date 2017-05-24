@@ -22,6 +22,7 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
+
 __authors__ = ["M Glass - ESRF ISDD Advanced Analysis and Modelling"]
 __license__ = "MIT"
 __date__ = "20/04/2017"
@@ -32,7 +33,19 @@ import numpy as np
 import sys
 
 from comsyl.math.TwoformVectors import TwoformVectorsWavefronts, TwoformVectorsEigenvectors
+from syned.storage_ring.magnetic_structures.insertion_device import InsertionDevice
 from comsyl.parallel.utils import isMaster, barrier
+
+def undulator_as_numpy_array(self):
+    array = np.array([self.K_vertical(),
+                      self.K_horizontal(),
+                      self.period_length(),
+                      self.number_of_periods()])
+    return array
+
+def undulator_from_numpy_array(array):
+    return InsertionDevice(array[0], array[1], array[2], array[3])
+
 
 class AutocorrelationFunctionIO(object):
     def __init__(self):
@@ -121,3 +134,4 @@ class AutocorrelationFunctionIO(object):
                 data_dict[key.replace("np_", "")] = TwoformVectorsEigenvectors(file_content[key])
 
         return data_dict
+

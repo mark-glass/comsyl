@@ -28,32 +28,43 @@ __date__ = "20/04/2017"
 
 
 
-from BeamlineComponents.Source.UndulatorVertical import UndulatorVertical
+from syned.storage_ring.magnetic_structures.undulator import Undulator
 
-esrf_undulator_18_4m = UndulatorVertical(1.68,
-                                      0.018,
-                                      int(4.0/0.018),
-                                     )
 
-esrf_undulator_18_2m = UndulatorVertical(1.68,
-                                         0.018,
-                                         int(2.0/0.018),
-                                        )
+esrf_undulator_18_4m = Undulator(K_horizontal     =0.0,
+                                 K_vertical       =1.68,
+                                 period_length    =0.018,
+                                 number_of_periods=int(4.0/0.018),
+                                 )
 
-esrf_undulator_18_1m = UndulatorVertical(1.68,
-                                         0.018,
-                                         int(1.0/0.018),
-                                        )
 
-short_undulator = UndulatorVertical(1.68,
-                                    0.018,
-                                    int(1.0/0.018),
-                                   )
+esrf_undulator_18_2m = Undulator(K_horizontal     =0.0,
+                                 K_vertical       =1.68,
+                                 period_length    =0.018,
+                                 number_of_periods=int(2.0/0.018),
+                                 )
 
-esrf_u18_3__1_4m = UndulatorVertical(0.445,
-                                     0.0183,
-                                     int(1.4/0.0183),
-                                     )
+
+esrf_undulator_18_1m = Undulator(K_horizontal     =0.0,
+                                 K_vertical       =1.68,
+                                 period_length    =0.018,
+                                 number_of_periods=int(1.0/0.018),
+                                 )
+
+
+
+short_undulator = Undulator(K_horizontal     =0.0,
+                                 K_vertical       =1.68,
+                                 period_length    =0.018,
+                                 number_of_periods=int(1.0/0.018),
+                                 )
+
+
+esrf_u18_3__1_4m =  Undulator(K_horizontal     =0.0,
+                                 K_vertical       =0.445,
+                                 period_length    =0.0183,
+                                 number_of_periods=int(1.4/0.0183),
+                                 )
 
 
 

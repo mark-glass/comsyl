@@ -45,16 +45,16 @@ class SRWAdapter(object):
         magnetic_fields = []
 
         if undulator.K_vertical() > 0.0:
-            vertical_field = SRWLMagFldH(1, 'v', undulator.B_vertical(), 0, 0, 0)
+            vertical_field = SRWLMagFldH(1, 'v', undulator.magnetic_field_vertical(), 0, 0, 0)
             magnetic_fields.append(vertical_field)
 
         if undulator.K_horizontal() > 0.0:
-            horizontal_field = SRWLMagFldH(1, 'h', 0, 0, undulator.B_horizontal(), 0)
+            horizontal_field = SRWLMagFldH(1, 'h', 0, 0, undulator.magnetic_field_horizontal(), 0)
             magnetic_fields.append(horizontal_field)
 
         srw_undulator = SRWLMagFldU(magnetic_fields,
-                                    undulator.periodLength(),
-                                    undulator.periodNumber())
+                                    undulator.period_length(),
+                                    undulator.number_of_periods())
 
         return srw_undulator
 

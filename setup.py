@@ -36,12 +36,13 @@ setup(name='comsyl',
       author='Mark Glass',
       author_email='mark.glass@esrf.fr',
       url='https://github.com/mark-glass/comsyl/',
-      packages=['comsyl', 'BeamlineComponents'],
+      packages=['comsyl'],
       install_requires=[
                         'scipy',
                         'slepc4py',
                         'petsc4py',
                         'mpi4py',
-                        'numpy'
+                        'numpy',
+                        'syned',
                        ]
      )

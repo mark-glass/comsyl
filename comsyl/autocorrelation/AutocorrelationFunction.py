@@ -28,19 +28,16 @@ __date__ = "20/04/2017"
 
 
 
+
+import numpy as np
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrix
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
 from comsyl.autocorrelation.DegreeOfCoherence import DegreeOfCoherence
 from comsyl.math.Twoform import Twoform
-
-__author__ = 'mglass'
-import numpy as np
 from comsyl.waveoptics.Wavefront import NumpyWavefront, SRWWavefront
-from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO
+from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO, undulator_as_numpy_array, \
+    undulator_from_numpy_array
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity
-
-
-from BeamlineComponents.Source.Undulator import Undulator
 
 
 class AutocorrelationFunction(object):
@@ -281,24 +278,10 @@ class AutocorrelationFunction(object):
 
         return correction
 
-    def verify(self, compare_to):
-        print("CM", np.abs(self._twoform.eigenvectors()-compare_to._twoform.eigenvectors()).max())
-        print("EIG", np.abs(self._twoform.eigenvalues()-compare_to._twoform.eigenvalues()).max())
-        print("SIG", np.abs(self._sigma_matrix._sigma_matrix-compare_to._sigma_matrix._sigma_matrix).max())
-        print("INTENSITY", np.abs(self.intensity()-compare_to.intensity()).max())
-        print("DETUNING", np.abs(self._detuning_parameter-compare_to._detuning_parameter).max())
-        print("ENERGY",np.abs(self.energy()-compare_to.energy()).max())
-        print("X_COORD", np.abs(self.xCoordinates()-compare_to.xCoordinates()).max())
-        print("Y_COORD", np.abs(self.yCoordinates()-compare_to.yCoordinates()).max())
-        print("STATIC ELECTRON DENS", np.abs(self._static_electron_density-compare_to._static_electron_density).max())
-        print("EFIELD", np.abs(self._wavefront.E_field_as_numpy()-compare_to._wavefront.E_field_as_numpy()).max())
-        print("EFIELD_COORD", np.abs(self._wavefront.asNumpyArray()[1]-compare_to._wavefront.asNumpyArray()[1]).max())
-        print("UNDULATOR", np.abs(self._undulator.asNumpyArray()-compare_to._undulator.asNumpyArray()).max())
-
     def asDictionary(self):
         twoform_as_numpy = self.Twoform().asNumpyArray()
         data_dict={"sigma_matrix": self._sigma_matrix.asNumpyArray(),
-                   "undulator": self._undulator.asNumpyArray(),
+                   "undulator": undulator_as_numpy_array(self._undulator),
                    "detuning_parameter": np.array([self._detuning_parameter]),
                    "energy": np.array([self.energy()]),
                    "electron_beam_energy": np.array([self.electronBeamEnergy()]),
@@ -331,7 +314,7 @@ class AutocorrelationFunction(object):
     @staticmethod
     def fromDictionary(data_dict):
         sigma_matrix = SigmaMatrix.fromNumpyArray(data_dict["sigma_matrix"])
-        undulator = Undulator.fromNumpyArray(data_dict["undulator"])
+        undulator = undulator_from_numpy_array(data_dict["undulator"])
         detuning_parameter = data_dict["detuning_parameter"][0]
         energy = data_dict["energy"][0]
 
