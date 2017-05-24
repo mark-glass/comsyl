@@ -70,7 +70,7 @@ class SRWAdapter(object):
     def electronBeam(self, electron_beam, x=0.0, xp=0.0, y=0.0, yp=0.0):
         #***********Electron Beam
         srw_electron_beam = SRWLPartBeam()
-        srw_electron_beam.Iavg = electron_beam.averageCurrent() #Average Current [A]
+        srw_electron_beam.Iavg = electron_beam.current() #Average Current [A]
         srw_electron_beam.partStatMom1.x = x #Initial Transverse Coordinates (initial Longitudinal Coordinate will be defined later on) [m]
         srw_electron_beam.partStatMom1.y = y
         #print("SAMPLED POS", srw_electron_beam.partStatMom1.x, srw_electron_beam.partStatMom1.y)
