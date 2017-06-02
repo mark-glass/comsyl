@@ -31,6 +31,13 @@ __date__ = "20/04/2017"
 
 import numpy as np
 import sys
+try:
+    import h5py
+    has_h5py = True
+except:
+    print("h5py is not installed")
+    has_h5py = False
+
 
 from comsyl.math.TwoformVectors import TwoformVectorsWavefronts, TwoformVectorsEigenvectors
 from syned.storage_ring.magnetic_structures.insertion_device import InsertionDevice
@@ -55,7 +62,6 @@ class AutocorrelationFunctionIO(object):
         af.Twoform().saveVectors(filename.replace(".npz", ""))
 
         if isMaster():
-            print("Saving autocorrelation function to %s" % filename)
             sys.stdout.flush()
 
             data_dict = af.asDictionary()
@@ -70,7 +76,30 @@ class AutocorrelationFunctionIO(object):
 
             np.savez_compressed(filename_npz, **save_dict)
 
-            print("Saving done.")
+
+    def saveh5(self, filename, af):
+        if has_h5py == False:
+            raise ImportError("h5py not available")
+
+        if isMaster():
+            f = h5py.File(filename, 'w')
+
+            print("Saving autocorrelation function to hdf5 file %s" % filename)
+            sys.stdout.flush()
+
+            data_dict = af.asDictionary()
+
+            for key in data_dict.keys():
+
+                if (key !="twoform_4"):
+                    if (data_dict[key] is not None):
+                        f[key] = data_dict[key]
+                else:
+                    f[key] = af.Twoform().allVectors()
+
+            f.close()
+            print("File written to disk",filename)
+
 
     def fromFile(self):
         return self._from_file
@@ -98,7 +127,6 @@ class AutocorrelationFunctionIO(object):
         filename_data = filename.replace(".npz", "")+".npy"
 
         try:
-            #vectors = TwoformVectorsEigenvectors(np.load(filename_data, mmap_mode="r"))
             file_content = np.load(filename_npz)
             vectors_shape = (file_content["np_twoform_3"].size,file_content["np_twoform_0"].size,file_content["np_twoform_1"].size)
             vectors = TwoformVectorsEigenvectors(np.memmap(filename_data, dtype=np.complex128, mode='c', shape=vectors_shape))
@@ -118,6 +146,24 @@ class AutocorrelationFunctionIO(object):
             data_dict[key.replace("np_", "")] = file_content[key]
 
         data_dict["twoform_4"] = vectors
+
+        return data_dict
+
+    def loadh5(filename):
+
+        if has_h5py == False:
+            raise ImportError("h5py not available")
+
+        h5f = h5py.File(filename,'r')
+
+        data_dict = dict()
+
+        for key in h5f.keys():
+            if (key !="twoform_4"):
+                data_dict[key] = h5f[key].value
+            else:
+                data_dict[key] = TwoformVectorsEigenvectors(h5f[key].value)
+
 
         return data_dict
 

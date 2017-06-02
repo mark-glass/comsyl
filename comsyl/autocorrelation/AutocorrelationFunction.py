@@ -39,6 +39,8 @@ from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunc
     undulator_from_numpy_array
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity
 
+# TODO: remove plots?
+from srxraylib.plot.gol import plot, plot_image
 
 class AutocorrelationFunction(object):
     def __init__(self, sigma_matrix, undulator, detuning_parameter, energy, electron_beam_energy, wavefront, exit_slit_wavefront,
@@ -112,14 +114,17 @@ class AutocorrelationFunction(object):
     def sigmaMatrix(self):
         return self._sigma_matrix
 
+
+    # TODO: change/remove plots?
+
     def showIntensity(self):
-        plotSurface(self.xCoordinates(), self.yCoordinates(), np.abs(self.intensity()[:, :]), "Intensity")
-        plotSurface(self.xCoordinates(), self.yCoordinates(), np.abs(self.intensity()[:, :]), False)
+        plot_image(np.abs(self.intensity()[:, :]), 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+                        title = "Intensity", xtitle = "X [um]", ytitle = "Y [um]")
 
     def showIntensityFromModes(self):
         intensity = self.intensityFromModes().real
-        plotSurface(self.xCoordinates(), self.yCoordinates(), intensity, "Intensity")
-        plotSurface(self.xCoordinates(), self.yCoordinates(), intensity, False)
+        plot_image( intensity, 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+                         title = "Intensity from modes", xtitle = "X [um]", ytitle = "Y [um]")
 
 
     def saveIntensity(self, filename="intensity"):
@@ -136,16 +141,19 @@ class AutocorrelationFunction(object):
         for i in range(max_i_n):
             self.showMode(i)
 
+    # TODO: change plots
     def showStaticElectronDensity(self):
-        plotSurface(self._wavefront.absolute_x_coordinates(),
-                    self._wavefront.absolute_y_coordinates(), self._static_electron_density)
-        plotSurface(self._wavefront.absolute_x_coordinates(),
-                    self._wavefront.absolute_y_coordinates(), self._static_electron_density, contour_plot=False)
+
+        plot_image(np.absolute(self._static_electron_density),
+                                    1e6*self._wavefront.absolute_x_coordinates(),
+                                    1e6*self._wavefront.absolute_y_coordinates(),
+                                    title = "Electron density", xtitle = "X [um]", ytitle = "Y [um]")
 
     def showModeDistribution(self):
         y = (self.modeDistribution()).real
         x = np.arange(y.shape[0])
-        plot(x, y)
+        plot(x, y, title = "Mode distribution", xtitle = "Mode index", ytitle = "Occupancy")
+
 
     def printModePeaks(self):
         for i_mode in range(self.numberModes()):
@@ -181,6 +189,9 @@ class AutocorrelationFunction(object):
 
     def coherentMode(self, i_mode):
         return self._twoform.vector(i_mode)
+
+    def eigenvalues(self):
+        return self._twoform.eigenvalues()
 
     def eigenvalue(self, i_mode):
         return self._twoform.eigenvalues()[i_mode]
@@ -238,14 +249,18 @@ class AutocorrelationFunction(object):
     def evaluateAllForFixedR1(self, r_1):
         return self._twoform.evaluateAllForFixedR1(self.xCoordinates(), self.yCoordinates(), r_1)
 
+    # TODO: change plots
     def plotDegreeOfCoherenceOneHoleFixed(self, x=0.0, y=0.0):
         x_coordinates = np.array(self._wavefront.absolute_x_coordinates())
         y_coordinates = np.array(self._wavefront.absolute_x_coordinates())
         values = self.degreeOfCoherence().planeForFixedR1(x_coordinates,
                                                           y_coordinates,
                                                           np.array([x, y]))
-        plotSurface(x_coordinates, y_coordinates, values)
-        plotSurface(x_coordinates, y_coordinates, values, False)
+
+        plot_image(np.absolute(values), 1e6*x_coordinates, 1e6*y_coordinates,
+                title = "Degree Of Coherence (modulus) One Hole Fixed",
+                xtitle = "X [um]", ytitle = "Y [um]")
+
 
     def symmetricDisplacementDegreeOfCoherence(self):
         x_coordinates = self.xCoordinates()
@@ -382,9 +397,21 @@ class AutocorrelationFunction(object):
     def save(self, filename):
         self._io.save(filename, self)
 
+    def saveh5(self, filename):
+        self._io.saveh5(filename, self)
+
     @staticmethod
     def load(filename):
         data_dict = AutocorrelationFunctionIO.load(filename)
+
+        af = AutocorrelationFunction.fromDictionary(data_dict)
+        af._io._setWasFileLoaded(filename)
+
+        return af
+
+    @staticmethod
+    def loadh5(filename):
+        data_dict = AutocorrelationFunctionIO.loadh5(filename)
 
         af = AutocorrelationFunction.fromDictionary(data_dict)
         af._io._setWasFileLoaded(filename)
