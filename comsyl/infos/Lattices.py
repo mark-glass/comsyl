@@ -83,6 +83,15 @@ new_Ob = ElectronBeam(energy_in_GeV=6.04,
                      moment_yyp   =0.0,
                      energy_spread=0.89e-03)
 
+alba = ElectronBeam(energy_in_GeV=3.0,
+                     current      =0.2,
+                     moment_xx    =(127e-6)**2,
+                     moment_yy    =(5.2e-6)**2,
+                     moment_xpxp  =(36.2e-6)**2,
+                     moment_ypyp  =(3.5e-6)**2,
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=1e-03)
 
 #
 #
@@ -313,6 +322,7 @@ def latticeByName(name):
                 "high_beta": hb_Ob,
                 "new": new_Ob,
                 "correct_new": correct_new_Ob,
+                "alba": alba,
                 # "round_new": round_new_Ob,
                 # "new_alpha":new_Ob_alpha,
                 # "correct_new_alpha":correct_new_Ob_alpha,

@@ -82,10 +82,9 @@ class AutocorrelationFunctionIO(object):
             raise ImportError("h5py not available")
 
         if isMaster():
-            f = h5py.File(filename, 'w')
-
-            print("Saving autocorrelation function to hdf5 file %s" % filename)
             sys.stdout.flush()
+
+            f = h5py.File(filename, 'w')
 
             data_dict = af.asDictionary()
 
@@ -98,7 +97,6 @@ class AutocorrelationFunctionIO(object):
                     f[key] = af.Twoform().allVectors()
 
             f.close()
-            print("File written to disk",filename)
 
 
     def fromFile(self):
