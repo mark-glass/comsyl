@@ -19,9 +19,9 @@
     },
     "optional": {
         "tag": "",
-        "use_two_step_method": "false",
+        "use_two_step_method": "true",
         "virtual_source_position": "entrance",
         "do_not_use_convolutions": "false",
-        "independent_dimensions": "false"
+        "independent_dimensions": "true"
     }
 }

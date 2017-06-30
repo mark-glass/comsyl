@@ -141,10 +141,14 @@ class AutocorrelationFunction(object):
         for i in range(max_i_n):
             self.showMode(i)
 
+    def staticElectronDensity(self):
+        return self._static_electron_density
+
+
     # TODO: change plots
     def showStaticElectronDensity(self):
 
-        plot_image(np.absolute(self._static_electron_density),
+        plot_image(np.absolute(self.staticElectronDensity()),
                                     1e6*self._wavefront.absolute_x_coordinates(),
                                     1e6*self._wavefront.absolute_y_coordinates(),
                                     title = "Electron density", xtitle = "X [um]", ytitle = "Y [um]")
