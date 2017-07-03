@@ -401,8 +401,8 @@ class AutocorrelationFunction(object):
     def save(self, filename):
         self._io.save(filename, self)
 
-    def saveh5(self, filename):
-        self._io.saveh5(filename, self)
+    def saveh5(self, filename, maximum_number_of_modes=None):
+        self._io.saveh5(filename, self, maximum_number_of_modes=maximum_number_of_modes)
 
     @staticmethod
     def load(filename):

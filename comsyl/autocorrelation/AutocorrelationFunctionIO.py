@@ -77,9 +77,17 @@ class AutocorrelationFunctionIO(object):
             np.savez_compressed(filename_npz, **save_dict)
 
 
-    def saveh5(self, filename, af):
+    def saveh5(self, filename, af, maximum_number_of_modes=None):
         if has_h5py == False:
             raise ImportError("h5py not available")
+
+        if maximum_number_of_modes is None:
+            maximum_number_of_modes = af.numberModes()
+
+        if maximum_number_of_modes > af.numberModes():
+            maximum_number_of_modes = af.numberModes()
+
+        print(">>>> saveh5: Saving %d modes from a total of %d modes calculated"%(maximum_number_of_modes,af.numberModes()))
 
         if isMaster():
             sys.stdout.flush()
@@ -90,11 +98,14 @@ class AutocorrelationFunctionIO(object):
 
             for key in data_dict.keys():
 
-                if (key !="twoform_4"):
+                if (key =="twoform_4"):
+                    f[key] = af.Twoform().allVectors()[0:maximum_number_of_modes,:,:]
+                elif (key == "twoform_3"):
+                    if (data_dict[key] is not None):
+                        f[key] = (data_dict[key])[0:maximum_number_of_modes]
+                else:
                     if (data_dict[key] is not None):
                         f[key] = data_dict[key]
-                else:
-                    f[key] = af.Twoform().allVectors()
 
             f.close()
 

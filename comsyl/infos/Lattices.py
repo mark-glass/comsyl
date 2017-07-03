@@ -83,6 +83,19 @@ new_Ob = ElectronBeam(energy_in_GeV=6.04,
                      moment_yyp   =0.0,
                      energy_spread=0.89e-03)
 
+
+# like newOb but E=6.0
+ebs_Ob = ElectronBeam(energy_in_GeV=6.0,
+                     current      =0.2,
+                     moment_xx    =(27.2e-6)**2,
+                     moment_yy    =(3.4e-6)**2,
+                     moment_xpxp  =(5.2e-6)**2,
+                     moment_ypyp  =(1.4e-6)**2,
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=0.89e-03)
+
+
 alba = ElectronBeam(energy_in_GeV=3.0,
                      current      =0.2,
                      moment_xx    =(127e-6)**2,
@@ -321,6 +334,7 @@ def latticeByName(name):
     lattices = {"low_beta": lb_Ob,
                 "high_beta": hb_Ob,
                 "new": new_Ob,
+                "ebs_Ob": ebs_Ob,
                 "correct_new": correct_new_Ob,
                 "alba": alba,
                 # "round_new": round_new_Ob,
