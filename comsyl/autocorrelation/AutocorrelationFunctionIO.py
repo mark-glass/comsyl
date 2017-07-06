@@ -163,7 +163,10 @@ class AutocorrelationFunctionIO(object):
         if has_h5py == False:
             raise ImportError("h5py not available")
 
-        h5f = h5py.File(filename,'r')
+        try:
+            h5f = h5py.File(filename,'r')
+        except:
+            raise Exception("Failed to read h5 file: %s"%filename)
 
         data_dict = dict()
 
