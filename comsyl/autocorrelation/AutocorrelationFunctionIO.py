@@ -31,6 +31,8 @@ __date__ = "20/04/2017"
 
 import numpy as np
 import sys
+from comsyl.utils.Logger import log, logProgress
+
 try:
     import h5py
     has_h5py = True
@@ -76,30 +78,98 @@ class AutocorrelationFunctionIO(object):
 
             np.savez_compressed(filename_npz, **save_dict)
 
+    # def saveh5_old(self, filename, af, maximum_number_of_modes=None):
+    #     if has_h5py == False:
+    #         raise ImportError("h5py not available")
+    #
+    #     if maximum_number_of_modes is None:
+    #         maximum_number_of_modes = af.numberModes()
+    #
+    #     if maximum_number_of_modes > af.numberModes():
+    #         maximum_number_of_modes = af.numberModes()
+    #
+    #     log(">>>> saveh5: Saving %d modes from a total of %d modes calculated"%(maximum_number_of_modes,af.numberModes()))
+    #
+    #     log("Saving vectors")
+    #     file_array_shape = (af.Twoform().numberVectors(),
+    #                         len(af.Twoform().xCoordinates()),
+    #                         len(af.Twoform().yCoordinates()))
+    #
+    #     if isMaster():
+    #         f = h5py.File(filename, 'w')
+    #         fp = np.memmap("tmp.npy", dtype=np.complex128, mode='w+', shape=file_array_shape)
+    #
+    #     for i_vector in range(af.Twoform().numberVectors()):
+    #         logProgress(af.Twoform().numberVectors(), i_vector, "Writing vectors")
+    #
+    #         vector = af.Twoform().vector(i_vector)
+    #
+    #         if isMaster():
+    #             # try to save fp with h5 library
+    #             fp[i_vector, :, :] = vector
+    #     log("Flushing")
+    #     if isMaster():
+    #         # -OR- try to save fp with h5 library
+    #         f["twoform_4"] = fp
+    #     log("done")
+    #
+    #
+    #     if isMaster():
+    #         sys.stdout.flush()
+    #
+    #         data_dict = af.asDictionary()
+    #
+    #         for key in data_dict.keys():
+    #
+    #             if (key =="twoform_4"):
+    #             ##    # too big for one core!
+    #             ##    f[key] = af.Twoform().allVectors()[0:maximum_number_of_modes,:,:]
+    #                 pass
+    #             elif (key == "twoform_3"):
+    #                 if (data_dict[key] is not None):
+    #                     f[key] = (data_dict[key])[0:maximum_number_of_modes]
+    #             else:
+    #                 if (data_dict[key] is not None):
+    #                     f[key] = data_dict[key]
+    #
+    #         f.close()
 
     def saveh5(self, filename, af, maximum_number_of_modes=None):
         if has_h5py == False:
             raise ImportError("h5py not available")
 
         if maximum_number_of_modes is None:
-            maximum_number_of_modes = af.numberModes()
+            maximum_number_of_modes = af.Twoform().numberVectors() # af.numberModes()
+
 
         if maximum_number_of_modes > af.numberModes():
             maximum_number_of_modes = af.numberModes()
 
-        print(">>>> saveh5: Saving %d modes from a total of %d modes calculated"%(maximum_number_of_modes,af.numberModes()))
+        file_array_shape = (maximum_number_of_modes,
+                            len(af.Twoform().xCoordinates()),
+                            len(af.Twoform().yCoordinates()))
+
+        if isMaster():
+            f = h5py.File(filename, 'w')
+            bigdataset = f.create_dataset("twoform_4",file_array_shape, dtype=np.complex)
+
+        for i_vector in range(maximum_number_of_modes):
+            logProgress(af.Twoform().numberVectors(), i_vector, "Writing vectors")
+
+            vector = af.Twoform().vector(i_vector)
+
+            if isMaster():
+                bigdataset[i_vector,:,:] = vector
 
         if isMaster():
             sys.stdout.flush()
-
-            f = h5py.File(filename, 'w')
 
             data_dict = af.asDictionary()
 
             for key in data_dict.keys():
 
-                if (key =="twoform_4"):
-                    f[key] = af.Twoform().allVectors()[0:maximum_number_of_modes,:,:]
+                if (key =="twoform_4"): # alreary done
+                    pass
                 elif (key == "twoform_3"):
                     if (data_dict[key] is not None):
                         f[key] = (data_dict[key])[0:maximum_number_of_modes]
