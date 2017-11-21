@@ -60,8 +60,14 @@ short_undulator = Undulator(K_horizontal     =0.0,
                                  )
 
 
-esrf_u18_3__1_4m =  Undulator(K_horizontal     =0.0,
+esrf_u18_3__1_4m_hb =  Undulator(K_horizontal     =0.0,
                                  K_vertical       =0.445,
+                                 period_length    =0.0183,
+                                 number_of_periods=int(1.4/0.0183),
+                                 )
+
+esrf_u18_3__1_4m_ebs =  Undulator(K_horizontal     =0.0,
+                                 K_vertical       =0.411,
                                  period_length    =0.0183,
                                  number_of_periods=int(1.4/0.0183),
                                  )
@@ -78,7 +84,8 @@ def undulatorByName(name):
                   "esrf_u18_2m": esrf_undulator_18_2m,
                   "esrf_u18_1m": esrf_undulator_18_1m,
                   "short_undulator": short_undulator,
-                  "esrf_u18.3_1.4m": esrf_u18_3__1_4m,
+                  "esrf_u18.3_1.4m": esrf_u18_3__1_4m_hb,
+                  "esrf_u18.3_1.4m_ebs": esrf_u18_3__1_4m_ebs,
                   "alba_u21_2m": alba_u21_2m,
                  }
 
