@@ -1,7 +1,7 @@
 {
     "lattice_name": "new",
     "undulator_name": "esrf_u18_2m",
-    "sampling_factor": 4.0,
+    "sampling_factor": 2.0,
     "beam_energies": 0,
     "number_modes": 500,
     "resonance_detuning": 1.0,
@@ -23,7 +23,7 @@
         "use_two_step_method": "true",
         "two_step_divergence_method": "quick",
         "virtual_source_position": "entrance",
-        "do_convergence_series": "true",
+        "do_convergence_series": "false",
         "convergence_series_start": 1.0,
         "convergence_series_length": 7
     }
