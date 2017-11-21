@@ -418,9 +418,10 @@ class AutocorrelationSimulator(object):
         log("File created: %s" % filename+".npy")
         log("File created: %s" % filename+".npz")
         try:
-            import h5py
-            af.saveh5(filename+".h5")
-            log("File created: %s" % filename+".h5")
+            pass
+            # import h5py
+            # af.saveh5(filename+".h5")
+            # log("File created: %s" % filename+".h5")
         except:
             pass
 
