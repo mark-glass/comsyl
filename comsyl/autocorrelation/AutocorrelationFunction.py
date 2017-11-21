@@ -152,7 +152,7 @@ class AutocorrelationFunction(object):
     # TODO: change plots
     def showStaticElectronDensity(self):
         try:
-        from srxraylib.plot.gol import plot_image
+            from srxraylib.plot.gol import plot_image
 
             plot_image(np.absolute(self.staticElectronDensity()),
                                         1e6*self._wavefront.absolute_x_coordinates(),
