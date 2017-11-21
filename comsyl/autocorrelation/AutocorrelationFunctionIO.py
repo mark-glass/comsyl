@@ -246,7 +246,7 @@ class AutocorrelationFunctionIO(object):
             else:
                 data_dict[key] = TwoformVectorsEigenvectors(h5f[key].value)
 
-
+        h5f.close()
         return data_dict
 
     @staticmethod

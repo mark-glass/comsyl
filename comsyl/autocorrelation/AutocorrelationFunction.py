@@ -27,8 +27,6 @@ __license__ = "MIT"
 __date__ = "20/04/2017"
 
 
-
-
 import numpy as np
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrix
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
@@ -40,7 +38,6 @@ from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunc
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity
 
 # TODO: remove plots?
-from srxraylib.plot.gol import plot, plot_image
 
 class AutocorrelationFunction(object):
     def __init__(self, sigma_matrix, undulator, detuning_parameter, energy, electron_beam_energy, wavefront, exit_slit_wavefront,
@@ -118,14 +115,21 @@ class AutocorrelationFunction(object):
     # TODO: change/remove plots?
 
     def showIntensity(self):
-        plot_image(np.abs(self.intensity()[:, :]), 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+        try:
+            from srxraylib.plot.gol import plot_image
+            plot_image(np.abs(self.intensity()[:, :]), 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
                         title = "Intensity", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def showIntensityFromModes(self):
-        intensity = self.intensityFromModes().real
-        plot_image( intensity, 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
-                         title = "Intensity from modes", xtitle = "X [um]", ytitle = "Y [um]")
-
+        try:
+            from srxraylib.plot.gol import plot_image
+            intensity = self.intensityFromModes().real
+            plot_image( intensity, 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+                             title = "Intensity from modes", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def saveIntensity(self, filename="intensity"):
         np.savez(filename,
@@ -147,16 +151,24 @@ class AutocorrelationFunction(object):
 
     # TODO: change plots
     def showStaticElectronDensity(self):
+        try:
+        from srxraylib.plot.gol import plot_image
 
-        plot_image(np.absolute(self.staticElectronDensity()),
-                                    1e6*self._wavefront.absolute_x_coordinates(),
-                                    1e6*self._wavefront.absolute_y_coordinates(),
-                                    title = "Electron density", xtitle = "X [um]", ytitle = "Y [um]")
+            plot_image(np.absolute(self.staticElectronDensity()),
+                                        1e6*self._wavefront.absolute_x_coordinates(),
+                                        1e6*self._wavefront.absolute_y_coordinates(),
+                                        title = "Electron density", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def showModeDistribution(self):
-        y = (self.modeDistribution()).real
-        x = np.arange(y.shape[0])
-        plot(x, y, title = "Mode distribution", xtitle = "Mode index", ytitle = "Occupancy")
+        try:
+            from srxraylib.plot.gol import plot
+            y = (self.modeDistribution()).real
+            x = np.arange(y.shape[0])
+            plot(x, y, title = "Mode distribution", xtitle = "Mode index", ytitle = "Occupancy")
+        except:
+            pass
 
 
     def printModePeaks(self):
@@ -255,16 +267,19 @@ class AutocorrelationFunction(object):
 
     # TODO: change plots
     def plotDegreeOfCoherenceOneHoleFixed(self, x=0.0, y=0.0):
-        x_coordinates = np.array(self._wavefront.absolute_x_coordinates())
-        y_coordinates = np.array(self._wavefront.absolute_x_coordinates())
-        values = self.degreeOfCoherence().planeForFixedR1(x_coordinates,
-                                                          y_coordinates,
-                                                          np.array([x, y]))
+        try:
+            from srxraylib.plot.gol import plot_image
+            x_coordinates = np.array(self._wavefront.absolute_x_coordinates())
+            y_coordinates = np.array(self._wavefront.absolute_x_coordinates())
+            values = self.degreeOfCoherence().planeForFixedR1(x_coordinates,
+                                                              y_coordinates,
+                                                              np.array([x, y]))
 
-        plot_image(np.absolute(values), 1e6*x_coordinates, 1e6*y_coordinates,
-                title = "Degree Of Coherence (modulus) One Hole Fixed",
-                xtitle = "X [um]", ytitle = "Y [um]")
-
+            plot_image(np.absolute(values), 1e6*x_coordinates, 1e6*y_coordinates,
+                    title = "Degree Of Coherence (modulus) One Hole Fixed",
+                    xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def symmetricDisplacementDegreeOfCoherence(self):
         x_coordinates = self.xCoordinates()
@@ -332,6 +347,7 @@ class AutocorrelationFunction(object):
 
     @staticmethod
     def fromDictionary(data_dict):
+
         sigma_matrix = SigmaMatrix.fromNumpyArray(data_dict["sigma_matrix"])
         undulator = undulator_from_numpy_array(data_dict["undulator"])
         detuning_parameter = data_dict["detuning_parameter"][0]
@@ -421,3 +437,4 @@ class AutocorrelationFunction(object):
         af._io._setWasFileLoaded(filename)
 
         return af
+
