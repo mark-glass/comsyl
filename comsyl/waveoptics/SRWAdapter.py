@@ -45,16 +45,16 @@ class SRWAdapter(object):
         magnetic_fields = []
 
         if undulator.K_vertical() > 0.0:
-            vertical_field = SRWLMagFldH(1, 'v', undulator.B_vertical(), 0, 0, 0)
+            vertical_field = SRWLMagFldH(1, 'v', undulator.magnetic_field_vertical(), 0, 0, 0)
             magnetic_fields.append(vertical_field)
 
         if undulator.K_horizontal() > 0.0:
-            horizontal_field = SRWLMagFldH(1, 'h', 0, 0, undulator.B_horizontal(), 0)
+            horizontal_field = SRWLMagFldH(1, 'h', 0, 0, undulator.magnetic_field_horizontal(), 0)
             magnetic_fields.append(horizontal_field)
 
         srw_undulator = SRWLMagFldU(magnetic_fields,
-                                    undulator.periodLength(),
-                                    undulator.periodNumber())
+                                    undulator.period_length(),
+                                    undulator.number_of_periods())
 
         return srw_undulator
 
@@ -70,7 +70,7 @@ class SRWAdapter(object):
     def electronBeam(self, electron_beam, x=0.0, xp=0.0, y=0.0, yp=0.0):
         #***********Electron Beam
         srw_electron_beam = SRWLPartBeam()
-        srw_electron_beam.Iavg = electron_beam.averageCurrent() #Average Current [A]
+        srw_electron_beam.Iavg = electron_beam.current() #Average Current [A]
         srw_electron_beam.partStatMom1.x = x #Initial Transverse Coordinates (initial Longitudinal Coordinate will be defined later on) [m]
         srw_electron_beam.partStatMom1.y = y
         #print("SAMPLED POS", srw_electron_beam.partStatMom1.x, srw_electron_beam.partStatMom1.y)

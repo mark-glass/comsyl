@@ -1,0 +1,27 @@
+{
+    "lattice_name": "alba",
+    "undulator_name": "alba_u21_2m",
+    "sampling_factor": 2.5,
+    "beam_energies": 1,
+    "number_modes": 600,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 125e-06,
+        "minimal_size_vertical":   125e-06,
+        "maximal_size_vertical":   125e-06,
+        "maximal_size_horizontal": 125e-06
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 300e-06,
+        "minimal_size_vertical":   50e-06,
+        "maximal_size_vertical":   50e-06,
+        "maximal_size_horizontal": 300e-06
+    },
+    "optional": {
+        "tag": "",
+        "use_two_step_method": "true",
+        "virtual_source_position": "entrance",
+        "do_not_use_convolutions": "false",
+        "independent_dimensions": "false"
+    }
+}

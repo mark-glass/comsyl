@@ -30,7 +30,8 @@ __date__ = "20/04/2017"
 
 import numpy as np
 
-
+# What is called here SigmaMatrix is in fact \Sigma^{-1} in thesis Eq 2.10
+#TODO rename to SigmaMatrixInverse or MMatrix
 class SigmaMatrix(object):
     def __init__(self, sigma_matrix):
         coordinates = ['x','xp','y','yp','d','z']

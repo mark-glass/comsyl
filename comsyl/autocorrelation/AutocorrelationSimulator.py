@@ -33,7 +33,7 @@ import mpi4py.MPI as mpi
 from comsyl.parallel.utils import isMaster, barrier
 from srwlib import *
 
-from BeamlineComponents.Beam.ElectronBeam import ElectronBeam
+from syned.storage_ring.electron_beam import ElectronBeam
 from comsyl.autocorrelation.AutocorrelationBuilder import AutocorrelationBuilder
 from comsyl.autocorrelation.AutocorrelationFunction import AutocorrelationFunction
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
@@ -50,6 +50,7 @@ from comsyl.utils.Logger import log, resetLog
 
 from comsyl.waveoptics.WavefrontBuilder import WavefrontBuilder, VIRTUAL_SOURCE_CENTER, VIRTUAL_SOURCE_ENTRANCE
 from comsyl.waveoptics.GaussianWavefrontBuilder import GaussianWavefrontBuilder
+from comsyl.autocorrelation.SigmaMatrix import SigmaMatrixFromCovariance
 
 
 class AutocorrelationSimulator(object):
@@ -172,16 +173,25 @@ class AutocorrelationSimulator(object):
             self._configuration.setSamplingFactor(sampling_factor)
             self.calculateAutocorrelation(sigma_matrix,undulator, info)
 
-    def calculateAutocorrelation(self, sigma_matrix, undulator, info):
+    def calculateAutocorrelation(self, electron_beam, undulator, info):
 
         configuration = self.configuration()
 
-        electron_beam = ElectronBeam(energy_in_GeV=6.04,
-                                     energy_spread=0,
-                                     average_current=0.2000,
-                                     electrons=1)
+        # electron_beam = ElectronBeam(energy_in_GeV=6.04,
+        #                              energy_spread=0,
+        #                              average_current=0.2000,
+        #                              electrons=1)
 
-        resonance_energy = int(undulator.resonanceEnergy(electron_beam.gamma(), 0, 0))
+        sigma_matrix = SigmaMatrixFromCovariance(xx   = electron_beam._moment_xx   ,
+                                                 xxp  = electron_beam._moment_xxp  ,
+                                                 xpxp = electron_beam._moment_xpxp ,
+                                                 yy   = electron_beam._moment_yy   ,
+                                                 yyp  = electron_beam._moment_yyp  ,
+                                                 ypyp = electron_beam._moment_ypyp ,
+                                                 sigma_dd = electron_beam._energy_spread,
+                                                 )
+
+        resonance_energy = int(undulator.resonance_energy(electron_beam.gamma(), 0, 0))
         energy = resonance_energy*configuration.detuningParameter()
 
         if configuration.virtualSourcePosition() == "":
@@ -393,19 +403,28 @@ class AutocorrelationSimulator(object):
         filename = self._determineFilename()
 
         lattice_name = configuration.latticeName()
-        sigma_matrix = latticeByName(lattice_name)
+        electron_beam = latticeByName(lattice_name)
         undulator = undulatorByName(configuration.undulatorName())
 
         info = AutocorrelationInfo()
         info.logStart()
         info.setConfiguration(configuration)
         info.setTag(configuration.tag())
-        af = self.calculateAutocorrelation(sigma_matrix=sigma_matrix,
+        af = self.calculateAutocorrelation(electron_beam=electron_beam,
                                            undulator=undulator,
                                            info=info)
 
         af.save(filename)
-        log("File created: %s" % filename)
+        log("File created: %s" % filename+".npy")
+        log("File created: %s" % filename+".npz")
+        try:
+            pass
+            # import h5py
+            # af.saveh5(filename+".h5")
+            # log("File created: %s" % filename+".h5")
+        except:
+            pass
+
         barrier()
 
         return filename

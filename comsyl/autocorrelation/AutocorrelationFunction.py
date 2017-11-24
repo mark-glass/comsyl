@@ -27,21 +27,17 @@ __license__ = "MIT"
 __date__ = "20/04/2017"
 
 
-
+import numpy as np
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrix
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
 from comsyl.autocorrelation.DegreeOfCoherence import DegreeOfCoherence
 from comsyl.math.Twoform import Twoform
-
-__author__ = 'mglass'
-import numpy as np
 from comsyl.waveoptics.Wavefront import NumpyWavefront, SRWWavefront
-from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO
+from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO, undulator_as_numpy_array, \
+    undulator_from_numpy_array
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity
 
-
-from BeamlineComponents.Source.Undulator import Undulator
-
+# TODO: remove plots?
 
 class AutocorrelationFunction(object):
     def __init__(self, sigma_matrix, undulator, detuning_parameter, energy, electron_beam_energy, wavefront, exit_slit_wavefront,
@@ -115,15 +111,25 @@ class AutocorrelationFunction(object):
     def sigmaMatrix(self):
         return self._sigma_matrix
 
+
+    # TODO: change/remove plots?
+
     def showIntensity(self):
-        plotSurface(self.xCoordinates(), self.yCoordinates(), np.abs(self.intensity()[:, :]), "Intensity")
-        plotSurface(self.xCoordinates(), self.yCoordinates(), np.abs(self.intensity()[:, :]), False)
+        try:
+            from srxraylib.plot.gol import plot_image
+            plot_image(np.abs(self.intensity()[:, :]), 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+                        title = "Intensity", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def showIntensityFromModes(self):
-        intensity = self.intensityFromModes().real
-        plotSurface(self.xCoordinates(), self.yCoordinates(), intensity, "Intensity")
-        plotSurface(self.xCoordinates(), self.yCoordinates(), intensity, False)
-
+        try:
+            from srxraylib.plot.gol import plot_image
+            intensity = self.intensityFromModes().real
+            plot_image( intensity, 1e6*self.xCoordinates(), 1e6*self.yCoordinates(),
+                             title = "Intensity from modes", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def saveIntensity(self, filename="intensity"):
         np.savez(filename,
@@ -139,16 +145,31 @@ class AutocorrelationFunction(object):
         for i in range(max_i_n):
             self.showMode(i)
 
+    def staticElectronDensity(self):
+        return self._static_electron_density
+
+
+    # TODO: change plots
     def showStaticElectronDensity(self):
-        plotSurface(self._wavefront.absolute_x_coordinates(),
-                    self._wavefront.absolute_y_coordinates(), self._static_electron_density)
-        plotSurface(self._wavefront.absolute_x_coordinates(),
-                    self._wavefront.absolute_y_coordinates(), self._static_electron_density, contour_plot=False)
+        try:
+            from srxraylib.plot.gol import plot_image
+
+            plot_image(np.absolute(self.staticElectronDensity()),
+                                        1e6*self._wavefront.absolute_x_coordinates(),
+                                        1e6*self._wavefront.absolute_y_coordinates(),
+                                        title = "Electron density", xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def showModeDistribution(self):
-        y = (self.modeDistribution()).real
-        x = np.arange(y.shape[0])
-        plot(x, y)
+        try:
+            from srxraylib.plot.gol import plot
+            y = (self.modeDistribution()).real
+            x = np.arange(y.shape[0])
+            plot(x, y, title = "Mode distribution", xtitle = "Mode index", ytitle = "Occupancy")
+        except:
+            pass
+
 
     def printModePeaks(self):
         for i_mode in range(self.numberModes()):
@@ -185,6 +206,9 @@ class AutocorrelationFunction(object):
     def coherentMode(self, i_mode):
         return self._twoform.vector(i_mode)
 
+    def eigenvalues(self):
+        return self._twoform.eigenvalues()
+
     def eigenvalue(self, i_mode):
         return self._twoform.eigenvalues()[i_mode]
 
@@ -192,7 +216,7 @@ class AutocorrelationFunction(object):
         mode_distribution = self._twoform.eigenvalues()/self.trace()
         return mode_distribution
 
-    def energy(self):
+    def photonEnergy(self):
         return self._energy
 
     def electronBeamEnergy(self):
@@ -241,14 +265,21 @@ class AutocorrelationFunction(object):
     def evaluateAllForFixedR1(self, r_1):
         return self._twoform.evaluateAllForFixedR1(self.xCoordinates(), self.yCoordinates(), r_1)
 
+    # TODO: change plots
     def plotDegreeOfCoherenceOneHoleFixed(self, x=0.0, y=0.0):
-        x_coordinates = np.array(self._wavefront.absolute_x_coordinates())
-        y_coordinates = np.array(self._wavefront.absolute_x_coordinates())
-        values = self.degreeOfCoherence().planeForFixedR1(x_coordinates,
-                                                          y_coordinates,
-                                                          np.array([x, y]))
-        plotSurface(x_coordinates, y_coordinates, values)
-        plotSurface(x_coordinates, y_coordinates, values, False)
+        try:
+            from srxraylib.plot.gol import plot_image
+            x_coordinates = np.array(self._wavefront.absolute_x_coordinates())
+            y_coordinates = np.array(self._wavefront.absolute_x_coordinates())
+            values = self.degreeOfCoherence().planeForFixedR1(x_coordinates,
+                                                              y_coordinates,
+                                                              np.array([x, y]))
+
+            plot_image(np.absolute(values), 1e6*x_coordinates, 1e6*y_coordinates,
+                    title = "Degree Of Coherence (modulus) One Hole Fixed",
+                    xtitle = "X [um]", ytitle = "Y [um]")
+        except:
+            pass
 
     def symmetricDisplacementDegreeOfCoherence(self):
         x_coordinates = self.xCoordinates()
@@ -281,26 +312,12 @@ class AutocorrelationFunction(object):
 
         return correction
 
-    def verify(self, compare_to):
-        print("CM", np.abs(self._twoform.eigenvectors()-compare_to._twoform.eigenvectors()).max())
-        print("EIG", np.abs(self._twoform.eigenvalues()-compare_to._twoform.eigenvalues()).max())
-        print("SIG", np.abs(self._sigma_matrix._sigma_matrix-compare_to._sigma_matrix._sigma_matrix).max())
-        print("INTENSITY", np.abs(self.intensity()-compare_to.intensity()).max())
-        print("DETUNING", np.abs(self._detuning_parameter-compare_to._detuning_parameter).max())
-        print("ENERGY",np.abs(self.energy()-compare_to.energy()).max())
-        print("X_COORD", np.abs(self.xCoordinates()-compare_to.xCoordinates()).max())
-        print("Y_COORD", np.abs(self.yCoordinates()-compare_to.yCoordinates()).max())
-        print("STATIC ELECTRON DENS", np.abs(self._static_electron_density-compare_to._static_electron_density).max())
-        print("EFIELD", np.abs(self._wavefront.E_field_as_numpy()-compare_to._wavefront.E_field_as_numpy()).max())
-        print("EFIELD_COORD", np.abs(self._wavefront.asNumpyArray()[1]-compare_to._wavefront.asNumpyArray()[1]).max())
-        print("UNDULATOR", np.abs(self._undulator.asNumpyArray()-compare_to._undulator.asNumpyArray()).max())
-
     def asDictionary(self):
         twoform_as_numpy = self.Twoform().asNumpyArray()
         data_dict={"sigma_matrix": self._sigma_matrix.asNumpyArray(),
-                   "undulator": self._undulator.asNumpyArray(),
+                   "undulator": undulator_as_numpy_array(self._undulator),
                    "detuning_parameter": np.array([self._detuning_parameter]),
-                   "energy": np.array([self.energy()]),
+                   "energy": np.array([self.photonEnergy()]),
                    "electron_beam_energy": np.array([self.electronBeamEnergy()]),
                    "wavefront_0": self._wavefront.asNumpyArray()[0],
                    "wavefront_1": self._wavefront.asNumpyArray()[1],
@@ -330,8 +347,9 @@ class AutocorrelationFunction(object):
 
     @staticmethod
     def fromDictionary(data_dict):
+
         sigma_matrix = SigmaMatrix.fromNumpyArray(data_dict["sigma_matrix"])
-        undulator = Undulator.fromNumpyArray(data_dict["undulator"])
+        undulator = undulator_from_numpy_array(data_dict["undulator"])
         detuning_parameter = data_dict["detuning_parameter"][0]
         energy = data_dict["energy"][0]
 
@@ -399,6 +417,9 @@ class AutocorrelationFunction(object):
     def save(self, filename):
         self._io.save(filename, self)
 
+    def saveh5(self, filename, maximum_number_of_modes=None):
+        self._io.saveh5(filename, self, maximum_number_of_modes=maximum_number_of_modes)
+
     @staticmethod
     def load(filename):
         data_dict = AutocorrelationFunctionIO.load(filename)
@@ -407,3 +428,13 @@ class AutocorrelationFunction(object):
         af._io._setWasFileLoaded(filename)
 
         return af
+
+    @staticmethod
+    def loadh5(filename):
+        data_dict = AutocorrelationFunctionIO.loadh5(filename)
+
+        af = AutocorrelationFunction.fromDictionary(data_dict)
+        af._io._setWasFileLoaded(filename)
+
+        return af
+

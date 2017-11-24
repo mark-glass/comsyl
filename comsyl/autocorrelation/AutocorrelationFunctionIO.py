@@ -22,6 +22,7 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
+
 __authors__ = ["M Glass - ESRF ISDD Advanced Analysis and Modelling"]
 __license__ = "MIT"
 __date__ = "20/04/2017"
@@ -30,9 +31,30 @@ __date__ = "20/04/2017"
 
 import numpy as np
 import sys
+from comsyl.utils.Logger import log, logProgress
+
+try:
+    import h5py
+    has_h5py = True
+except:
+    print("h5py is not installed")
+    has_h5py = False
+
 
 from comsyl.math.TwoformVectors import TwoformVectorsWavefronts, TwoformVectorsEigenvectors
+from syned.storage_ring.magnetic_structures.insertion_device import InsertionDevice
 from comsyl.parallel.utils import isMaster, barrier
+
+def undulator_as_numpy_array(self):
+    array = np.array([self.K_vertical(),
+                      self.K_horizontal(),
+                      self.period_length(),
+                      self.number_of_periods()])
+    return array
+
+def undulator_from_numpy_array(array):
+    return InsertionDevice(array[0], array[1], array[2], array[3])
+
 
 class AutocorrelationFunctionIO(object):
     def __init__(self):
@@ -42,7 +64,6 @@ class AutocorrelationFunctionIO(object):
         af.Twoform().saveVectors(filename.replace(".npz", ""))
 
         if isMaster():
-            print("Saving autocorrelation function to %s" % filename)
             sys.stdout.flush()
 
             data_dict = af.asDictionary()
@@ -57,7 +78,107 @@ class AutocorrelationFunctionIO(object):
 
             np.savez_compressed(filename_npz, **save_dict)
 
-            print("Saving done.")
+    # def saveh5_old(self, filename, af, maximum_number_of_modes=None):
+    #     if has_h5py == False:
+    #         raise ImportError("h5py not available")
+    #
+    #     if maximum_number_of_modes is None:
+    #         maximum_number_of_modes = af.numberModes()
+    #
+    #     if maximum_number_of_modes > af.numberModes():
+    #         maximum_number_of_modes = af.numberModes()
+    #
+    #     log(">>>> saveh5: Saving %d modes from a total of %d modes calculated"%(maximum_number_of_modes,af.numberModes()))
+    #
+    #     log("Saving vectors")
+    #     file_array_shape = (af.Twoform().numberVectors(),
+    #                         len(af.Twoform().xCoordinates()),
+    #                         len(af.Twoform().yCoordinates()))
+    #
+    #     if isMaster():
+    #         f = h5py.File(filename, 'w')
+    #         fp = np.memmap("tmp.npy", dtype=np.complex128, mode='w+', shape=file_array_shape)
+    #
+    #     for i_vector in range(af.Twoform().numberVectors()):
+    #         logProgress(af.Twoform().numberVectors(), i_vector, "Writing vectors")
+    #
+    #         vector = af.Twoform().vector(i_vector)
+    #
+    #         if isMaster():
+    #             # try to save fp with h5 library
+    #             fp[i_vector, :, :] = vector
+    #     log("Flushing")
+    #     if isMaster():
+    #         # -OR- try to save fp with h5 library
+    #         f["twoform_4"] = fp
+    #     log("done")
+    #
+    #
+    #     if isMaster():
+    #         sys.stdout.flush()
+    #
+    #         data_dict = af.asDictionary()
+    #
+    #         for key in data_dict.keys():
+    #
+    #             if (key =="twoform_4"):
+    #             ##    # too big for one core!
+    #             ##    f[key] = af.Twoform().allVectors()[0:maximum_number_of_modes,:,:]
+    #                 pass
+    #             elif (key == "twoform_3"):
+    #                 if (data_dict[key] is not None):
+    #                     f[key] = (data_dict[key])[0:maximum_number_of_modes]
+    #             else:
+    #                 if (data_dict[key] is not None):
+    #                     f[key] = data_dict[key]
+    #
+    #         f.close()
+
+    def saveh5(self, filename, af, maximum_number_of_modes=None):
+        if has_h5py == False:
+            raise ImportError("h5py not available")
+
+        if maximum_number_of_modes is None:
+            maximum_number_of_modes = af.Twoform().numberVectors() # af.numberModes()
+
+
+        if maximum_number_of_modes > af.numberModes():
+            maximum_number_of_modes = af.numberModes()
+
+        file_array_shape = (maximum_number_of_modes,
+                            len(af.Twoform().xCoordinates()),
+                            len(af.Twoform().yCoordinates()))
+
+        if isMaster():
+            f = h5py.File(filename, 'w')
+            bigdataset = f.create_dataset("twoform_4",file_array_shape, dtype=np.complex)
+
+        for i_vector in range(maximum_number_of_modes):
+            logProgress(af.Twoform().numberVectors(), i_vector, "Writing vectors")
+
+            vector = af.Twoform().vector(i_vector)
+
+            if isMaster():
+                bigdataset[i_vector,:,:] = vector
+
+        if isMaster():
+            sys.stdout.flush()
+
+            data_dict = af.asDictionary()
+
+            for key in data_dict.keys():
+
+                if (key =="twoform_4"): # alreary done
+                    pass
+                elif (key == "twoform_3"):
+                    if (data_dict[key] is not None):
+                        f[key] = (data_dict[key])[0:maximum_number_of_modes]
+                else:
+                    if (data_dict[key] is not None):
+                        f[key] = data_dict[key]
+
+            f.close()
+
 
     def fromFile(self):
         return self._from_file
@@ -85,7 +206,6 @@ class AutocorrelationFunctionIO(object):
         filename_data = filename.replace(".npz", "")+".npy"
 
         try:
-            #vectors = TwoformVectorsEigenvectors(np.load(filename_data, mmap_mode="r"))
             file_content = np.load(filename_npz)
             vectors_shape = (file_content["np_twoform_3"].size,file_content["np_twoform_0"].size,file_content["np_twoform_1"].size)
             vectors = TwoformVectorsEigenvectors(np.memmap(filename_data, dtype=np.complex128, mode='c', shape=vectors_shape))
@@ -108,6 +228,27 @@ class AutocorrelationFunctionIO(object):
 
         return data_dict
 
+    def loadh5(filename):
+
+        if has_h5py == False:
+            raise ImportError("h5py not available")
+
+        try:
+            h5f = h5py.File(filename,'r')
+        except:
+            raise Exception("Failed to read h5 file: %s"%filename)
+
+        data_dict = dict()
+
+        for key in h5f.keys():
+            if (key !="twoform_4"):
+                data_dict[key] = h5f[key].value
+            else:
+                data_dict[key] = TwoformVectorsEigenvectors(h5f[key].value)
+
+        h5f.close()
+        return data_dict
+
     @staticmethod
     def load_npz(filename):
 
@@ -121,3 +262,4 @@ class AutocorrelationFunctionIO(object):
                 data_dict[key.replace("np_", "")] = TwoformVectorsEigenvectors(file_content[key])
 
         return data_dict
+

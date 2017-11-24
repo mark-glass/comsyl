@@ -34,12 +34,14 @@ from comsyl.math.TwoformVectors import TwoformVectorsEigenvectors
 from comsyl.math.utils import trapez2D
 from comsyl.math.Interpolation import coveredInterpolation
 
+# Saves the eigenvalues and the eigenvectors
 class Twoform(object):
-    def __init__(self, coordinates_x, coordinates_y, diagonal_elements, eigenvalues, twoform_vectors):
+    def __init__(self, coordinates_x, coordinates_y, diagonal_elements, eigenvalues1, twoform_vectors):
         self._coordinates_x = coordinates_x
         self._coordinates_y = coordinates_y
         self._setTwoformVectors(twoform_vectors)
 
+        eigenvalues = np.array(eigenvalues1) # added srio to deal with hdf5 files
         self._eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))[::-1]]
 
         if diagonal_elements is not None:
