@@ -45,7 +45,7 @@ from comsyl.parallel.DistributionPlan import DistributionPlan
 from comsyl.waveoptics.Wavefront import NumpyWavefront
 from comsyl.utils.Logger import logAll
 
-def propagteWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, rescale_y):
+def propagteWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, rescale_y, i_mode):
     s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
     wavefront.save("./tmp/tmp%s_in"%s_id)
 
@@ -75,6 +75,7 @@ tmp.save("./tmp/tmp%s_out" % s_id)
 
     file = open("./tmp/tmp%s.py"%s_id, "w")
     file.writelines(parameter_lines)
+    file.writelines("\ni_mode=%d\n"%i_mode) # added srio
     file.writelines(lines)
     file.close()
 
@@ -198,7 +199,7 @@ class AutocorrelationFunctionPropagator(object):
                                                   autocorrelation_function.SRWWavefrontRx(),
                                                   autocorrelation_function.SRWWavefrontDRx(),
                                                   autocorrelation_function.SRWWavefrontRy(),
-                                                  autocorrelation_function.SRWWavefrontDRy(), 1.0, 1.0)
+                                                  autocorrelation_function.SRWWavefrontDRy(), 1.0, 1.0, i_mode)
 
                 # norm_mode = trapez2D( np.abs(srw_wavefront.E_field_as_numpy()[0,:,:,0])**2, 1, 1)**0.5
                 # if norm_mode > 1e2 or np.isnan(norm_mode):
