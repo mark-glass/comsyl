@@ -2,6 +2,8 @@
 
 COMSYL makes the coherent mode decomposition of synchrotron radiation emitted by electrons passing through an undulator placed in a storage ring. COMSYL permits naturally the statistical analysis and propagation of the cross spectral density along the beamline optics. The coherence properties of the X-ray beam at any point of the beamline are completely given in terms of the eigenvalues and coherent modes of the cross spectral density.
 
+An example of coherent mode decomposition of undulator radiation (U18 1.4m long undulator at resonance 17225 eV)  at the ESRF-EBS calculated with COMSYL is here: https://youtu.be/h24RrJZaQ80
+
 Reference: 
 ----------
 
