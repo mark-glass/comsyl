@@ -102,7 +102,7 @@ cd ..
 # comsyl
 git clone https://github.com/mark-glass/comsyl
 cd comsyl
-git checkout syned
+# git checkout syned
 python3 setup.py build
 python3 setup.py develop --user
 cd ..
