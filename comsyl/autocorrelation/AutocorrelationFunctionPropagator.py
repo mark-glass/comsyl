@@ -79,7 +79,8 @@ tmp.save("./tmp/tmp%s_out" % s_id)
     file.writelines(lines)
     file.close()
 
-    os.system("python3 ./tmp/tmp%s.py"%s_id)
+    # os.system("python3 ./tmp/tmp%s.py"%s_id)
+    os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
 
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
 
@@ -194,6 +195,8 @@ class AutocorrelationFunctionPropagator(object):
 
                 wavefront = autocorrelation_function.coherentModeAsWavefront(i_mode)
                 #wavefront._e_field[np.abs(wavefront._e_field)<0.000001]=0.0
+
+                # CHANGE THIS FOR WOFRY
                 srw_wavefront = propagteWavefront(self.__srw_beamline,
                                                   wavefront,
                                                   autocorrelation_function.SRWWavefrontRx(),
@@ -224,7 +227,7 @@ class AutocorrelationFunctionPropagator(object):
             #     sys.stdout.flush()
             #     exit()
 
-
+            # writes a file for every wavefront
             TwoformVectorsWavefronts.pushWavefront(filename, adjusted_wavefront, index=i_mode)
             #print("Saving wavefront %i" % i_mode)
 
@@ -233,8 +236,10 @@ class AutocorrelationFunctionPropagator(object):
 
         mpi.COMM_WORLD.barrier()
 
+        # replace the wavefronts bu the propagated ones
         af = self._saveAutocorrelation(autocorrelation_function, number_modes, x_coordinates, y_coordinates, filename)
 
+        # convert from one file per wavefront to one big array
         af.Twoform().convertToTwoformVectorsEigenvectors()
         af.info().setEndTime()
 
