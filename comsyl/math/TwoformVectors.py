@@ -200,7 +200,9 @@ class TwoformVectorsWavefronts(object):
 
     def read(self, index):
         #as_array = list()
-        filename = self._file.replace(".npz", "") + str(index)+".wfs.npz"
+        # filename = self._file.replace(".npz", "") + str(index)+".wfs.npz"
+        # srio
+        filename = self._file.replace(".npz", "_") + "%04d"%(index)+".wfs.npz"
         #for i in range(3):
         #    as_array.append(np.load(filename))
         #wavefront = NumpyWavefront.fromNumpyArray(as_array[0], as_array[1], as_array[2])
@@ -257,7 +259,9 @@ class TwoformVectorsWavefronts(object):
 
     @staticmethod
     def pushWavefront(file, wavefront, index):
-        filename = file.replace(".npz", "") + str(index)+".wfs"
+        # filename = file.replace(".npz", ".") + str(index)+".wfs"
+        # srio
+        filename = file.replace(".npz", "_") + "%04d"%(index) + ".wfs"
 
         wavefront.toNumpyWavefront().save(filename)
 

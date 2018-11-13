@@ -45,8 +45,12 @@ from comsyl.parallel.DistributionPlan import DistributionPlan
 from comsyl.waveoptics.Wavefront import NumpyWavefront
 from comsyl.utils.Logger import logAll
 
-def propagteWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, rescale_y, i_mode):
+def propagateWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, rescale_y, i_mode, python_to_be_used="python"):
     s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
+    try:
+        os.system("mkdir tmp")
+    except:
+        pass
     wavefront.save("./tmp/tmp%s_in"%s_id)
 
     parameter_lines = "rx=%f\ndrx=%f\nry=%f\ndry=%f\nrescale_x=%f\nrescale_y=%f\ns_id=\"%s\"" % (rx, drx, ry, dry, rescale_x, rescale_y, s_id)
@@ -80,14 +84,88 @@ tmp.save("./tmp/tmp%s_out" % s_id)
     file.close()
 
     # os.system("python3 ./tmp/tmp%s.py"%s_id)
-    os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
+    # os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
+    os.system(python_to_be_used+" ./tmp/tmp%s.py"%s_id)
+
+    return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
+
+
+# rx=1.998731
+# drx=0.546210
+# ry=1.998731
+# dry=0.546210
+# rescale_x=1.000000
+# rescale_y=1.000000
+# s_id="0_hib3-3302"
+# i_mode=49
+#
+# import pickle
+# from wofry.propagator.propagator import PropagationManager
+# from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
+# from comsyl.waveoptics.WofrySuperBeamline import WofrySuperBeamline
+#
+# # initialize propagator
+# mypropagator = PropagationManager.Instance()
+# try:
+#     mypropagator.add_propagator(FresnelZoomXY2D())
+# except:
+#     print("May be you alreay initialized propagator and stored FresnelZoomXY2D")
+#
+# srw_beamline = pickle.load(open("/scisoft/xop2.4/extensions/shadowvui/shadow3-scripts/HIGHLIGHTS/BEAMLINE.p","rb"))
+#
+# WofrySuperBeamline.propagate_numpy_wavefront(
+#     "./tmp%s_IN.npz"%s_id,
+#     "./tmp%s_OUT.npz"%s_id,
+#     srw_beamline,mypropagator)
+
+
+def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="python"):
+    s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
+    try:
+        os.system("mkdir tmp")
+    except:
+        pass
+    wavefront.save("./tmp/tmp%s_in"%s_id)
+
+    parameter_lines = "s_id=\"%s\"" % (s_id)
+    pickle.dump(beamline, open("./tmp/tmp%s_beamline.p"%s_id,"wb"))
+    lines ="""
+import pickle
+from wofry.propagator.propagator import PropagationManager
+from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
+from comsyl.waveoptics.WofrySuperBeamline import WofrySuperBeamline
+
+# initialize propagator
+mypropagator = PropagationManager.Instance()
+try:
+    mypropagator.add_propagator(FresnelZoomXY2D())
+except:
+    print("May be you alreay initialized propagator and stored FresnelZoomXY2D")
+
+beamline = pickle.load(open("./tmp/tmp%s_beamline.p"%s_id,"rb"))
+
+WofrySuperBeamline.propagate_numpy_wavefront(
+    "./tmp/tmp%s_in.npz"%s_id,
+    "./tmp/tmp%s_out.npz"%s_id,
+    beamline,mypropagator)
+"""
+
+    file = open("./tmp/tmp%s.py"%s_id, "w")
+    file.writelines(parameter_lines)
+    file.writelines("\ni_mode=%d\n"%i_mode) # added srio
+    file.writelines(lines)
+    file.close()
+
+    # os.system("python3 ./tmp/tmp%s.py"%s_id)
+    # os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
+    os.system(python_to_be_used+" ./tmp/tmp%s.py"%s_id)
 
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
 
 
 class AutocorrelationFunctionPropagator(object):
     def __init__(self, srw_beamline):
-        self.__srw_beamline = srw_beamline
+        self.__srw_beamline = srw_beamline # srio@esrf.eu: this is the beamline, can be SRW or WOFRY
 
         self.setMaximumMode(None)
         self.setMaxCoordinates(None, None, None, None)
@@ -162,7 +240,7 @@ class AutocorrelationFunctionPropagator(object):
         else:
             return wavefront
 
-    def propagate(self, autocorrelation_function, filename):
+    def propagate(self, autocorrelation_function, filename, method='SRW', python_to_be_used="python"):
 
         source_filename = autocorrelation_function._io.fromFile()
 
@@ -196,13 +274,19 @@ class AutocorrelationFunctionPropagator(object):
                 wavefront = autocorrelation_function.coherentModeAsWavefront(i_mode)
                 #wavefront._e_field[np.abs(wavefront._e_field)<0.000001]=0.0
 
-                # CHANGE THIS FOR WOFRY
-                srw_wavefront = propagteWavefront(self.__srw_beamline,
-                                                  wavefront,
-                                                  autocorrelation_function.SRWWavefrontRx(),
-                                                  autocorrelation_function.SRWWavefrontDRx(),
-                                                  autocorrelation_function.SRWWavefrontRy(),
-                                                  autocorrelation_function.SRWWavefrontDRy(), 1.0, 1.0, i_mode)
+                if method == 'SRW':
+                    # CHANGE THIS FOR WOFRY
+                    srw_wavefront = propagateWavefront(self.__srw_beamline,
+                                                      wavefront,
+                                                      autocorrelation_function.SRWWavefrontRx(),
+                                                      autocorrelation_function.SRWWavefrontDRx(),
+                                                      autocorrelation_function.SRWWavefrontRy(),
+                                                      autocorrelation_function.SRWWavefrontDRy(), 1.0, 1.0, i_mode,
+                                                      python_to_be_used=python_to_be_used)
+                elif method == 'WOFRY':
+                    srw_wavefront = propagateWavefrontWofry(self.__srw_beamline,wavefront,i_mode,python_to_be_used=python_to_be_used)
+                else:
+                    raise Exception("Method not known: %s"%method)
 
                 # norm_mode = trapez2D( np.abs(srw_wavefront.E_field_as_numpy()[0,:,:,0])**2, 1, 1)**0.5
                 # if norm_mode > 1e2 or np.isnan(norm_mode):
@@ -248,6 +332,7 @@ class AutocorrelationFunctionPropagator(object):
             os.remove(f)
 
         return af
+
 
     def _totalNumberWavefronts(self, wavefronts):
 
@@ -322,17 +407,20 @@ class AutocorrelationFunctionPropagator(object):
 
         log_string = ""
 
-        for i_elem, opt_elem in enumerate(self.__srw_beamline.arOpt):
-            log_string += self.seperator()
-            optical_element = "Optical element: %s" % type(opt_elem).__name__
-            log_string += optical_element
+        try:
+            for i_elem, opt_elem in enumerate(self.__srw_beamline.arOpt):
+                log_string += self.seperator()
+                optical_element = "Optical element: %s" % type(opt_elem).__name__
+                log_string += optical_element
 
-            attributes = [m for m in inspect.getmembers(opt_elem) if not "__" in m[0]]
+                attributes = [m for m in inspect.getmembers(opt_elem) if not "__" in m[0]]
 
-            log_string += str(self.__srw_beamline.arProp[i_elem])
-            for attribute in zip(attributes):
-                log_string += str(attribute)
+                log_string += str(self.__srw_beamline.arProp[i_elem])
+                for attribute in zip(attributes):
+                    log_string += str(attribute)
 
-            log_string += self.seperator()
+                log_string += self.seperator()
+        except:
+            pass
 
         return log_string
