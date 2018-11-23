@@ -27,8 +27,7 @@ __license__ = "MIT"
 __date__ = "20/04/2017"
 
 
-
-from time import localtime, strftime
+import time
 
 from comsyl.parallel.utils import isMaster
 
@@ -47,7 +46,7 @@ class Logger(object):
             self.logAll(log_string)
 
     def logAll(self, log_string):
-        output = "[%s] %s" %(strftime("%H:%M:%S", localtime()), log_string)
+        output = "[%s] %s" %(time.strftime("%Y-%m-%d %H:%M:%S"), log_string)
         print(output)
         self._total_log.append(output)
         sys.stdout.flush()

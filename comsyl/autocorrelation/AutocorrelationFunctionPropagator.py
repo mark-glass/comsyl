@@ -44,13 +44,14 @@ from comsyl.math.utils import trapez2D
 from comsyl.parallel.DistributionPlan import DistributionPlan
 from comsyl.waveoptics.Wavefront import NumpyWavefront
 from comsyl.utils.Logger import logAll
+from comsyl.parallel.utils import isMaster, barrier
 
 def propagateWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, rescale_y, i_mode, python_to_be_used="python"):
+    if isMaster():
+        if not os.path.exists("tmp"):
+            os.mkdir("tmp")
+
     s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
-    try:
-        os.system("mkdir tmp")
-    except:
-        pass
     wavefront.save("./tmp/tmp%s_in"%s_id)
 
     parameter_lines = "rx=%f\ndrx=%f\nry=%f\ndry=%f\nrescale_x=%f\nrescale_y=%f\ns_id=\"%s\"" % (rx, drx, ry, dry, rescale_x, rescale_y, s_id)
@@ -83,48 +84,13 @@ tmp.save("./tmp/tmp%s_out" % s_id)
     file.writelines(lines)
     file.close()
 
-    # os.system("python3 ./tmp/tmp%s.py"%s_id)
-    # os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
     os.system(python_to_be_used+" ./tmp/tmp%s.py"%s_id)
 
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
 
 
-# rx=1.998731
-# drx=0.546210
-# ry=1.998731
-# dry=0.546210
-# rescale_x=1.000000
-# rescale_y=1.000000
-# s_id="0_hib3-3302"
-# i_mode=49
-#
-# import pickle
-# from wofry.propagator.propagator import PropagationManager
-# from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
-# from comsyl.waveoptics.WofrySuperBeamline import WofrySuperBeamline
-#
-# # initialize propagator
-# mypropagator = PropagationManager.Instance()
-# try:
-#     mypropagator.add_propagator(FresnelZoomXY2D())
-# except:
-#     print("May be you alreay initialized propagator and stored FresnelZoomXY2D")
-#
-# srw_beamline = pickle.load(open("/scisoft/xop2.4/extensions/shadowvui/shadow3-scripts/HIGHLIGHTS/BEAMLINE.p","rb"))
-#
-# WofrySuperBeamline.propagate_numpy_wavefront(
-#     "./tmp%s_IN.npz"%s_id,
-#     "./tmp%s_OUT.npz"%s_id,
-#     srw_beamline,mypropagator)
-
-
 def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="python"):
     s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
-    try:
-        os.system("mkdir tmp")
-    except:
-        pass
     wavefront.save("./tmp/tmp%s_in"%s_id)
 
     parameter_lines = "s_id=\"%s\"" % (s_id)
@@ -133,7 +99,7 @@ def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="pyth
 import pickle
 from wofry.propagator.propagator import PropagationManager
 from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
-from comsyl.waveoptics.WofrySuperBeamline import WofrySuperBeamline
+from comsyl.waveoptics.WOFRYAdapter import CWBeamline
 
 # initialize propagator
 mypropagator = PropagationManager.Instance()
@@ -144,7 +110,7 @@ except:
 
 beamline = pickle.load(open("./tmp/tmp%s_beamline.p"%s_id,"rb"))
 
-WofrySuperBeamline.propagate_numpy_wavefront(
+CWBeamline.propagate_numpy_wavefront(
     "./tmp/tmp%s_in.npz"%s_id,
     "./tmp/tmp%s_out.npz"%s_id,
     beamline,mypropagator)
@@ -156,8 +122,6 @@ WofrySuperBeamline.propagate_numpy_wavefront(
     file.writelines(lines)
     file.close()
 
-    # os.system("python3 ./tmp/tmp%s.py"%s_id)
-    # os.system("/users/srio/OASYS1.1/miniconda3/bin/python ./tmp/tmp%s.py"%s_id)
     os.system(python_to_be_used+" ./tmp/tmp%s.py"%s_id)
 
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
@@ -258,6 +222,10 @@ class AutocorrelationFunctionPropagator(object):
             number_modes = autocorrelation_function.numberModes()
         else:
             number_modes = self._maximum_mode
+
+        if isMaster():
+            if not os.path.exists("tmp"):
+                os.mkdir("tmp")
 
         distribution_plan = DistributionPlan(mpi.COMM_WORLD, n_rows=number_modes, n_columns=1)
 
