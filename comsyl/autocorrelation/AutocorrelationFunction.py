@@ -31,7 +31,7 @@ import numpy as np
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrix
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
 from comsyl.autocorrelation.DegreeOfCoherence import DegreeOfCoherence
-from comsyl.math.Twoform import Twoform
+from comsyl.mathcomsyl.Twoform import Twoform
 from comsyl.waveoptics.Wavefront import NumpyWavefront, SRWWavefront
 from comsyl.autocorrelation.AutocorrelationFunctionIO import AutocorrelationFunctionIO, undulator_as_numpy_array, \
     undulator_from_numpy_array

@@ -41,7 +41,7 @@ except:
     has_h5py = False
 
 
-from comsyl.math.TwoformVectors import TwoformVectorsWavefronts, TwoformVectorsEigenvectors
+from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsWavefronts, TwoformVectorsEigenvectors
 from syned.storage_ring.magnetic_structures.insertion_device import InsertionDevice
 from comsyl.parallel.utils import isMaster, barrier
 

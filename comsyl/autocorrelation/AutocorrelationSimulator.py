@@ -39,10 +39,10 @@ from comsyl.autocorrelation.AutocorrelationFunction import AutocorrelationFuncti
 from comsyl.autocorrelation.AutocorrelationInfo import AutocorrelationInfo
 from comsyl.autocorrelation.AutocorrelationOperator import AutocorrelationOperator
 from comsyl.autocorrelation.DivergenceAction import DivergenceAction
-from comsyl.math.Twoform import Twoform
-from comsyl.math.MatrixBuilder import MatrixBuilder
-from comsyl.math.Eigenmoder import Eigenmoder
-from comsyl.math.EigenmoderSeparation import EigenmoderSeparation
+from comsyl.mathcomsyl.Twoform import Twoform
+from comsyl.mathcomsyl.MatrixBuilder import MatrixBuilder
+from comsyl.mathcomsyl.Eigenmoder import Eigenmoder
+from comsyl.mathcomsyl.EigenmoderSeparation import EigenmoderSeparation
 from comsyl.infos.Undulators import undulatorByName
 from comsyl.infos.Lattices import latticeByName
 from comsyl.autocorrelation.PhaseSpaceDensity import PhaseSpaceDensity

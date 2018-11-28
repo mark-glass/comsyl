@@ -32,7 +32,7 @@ import numpy as np
 import mpi4py.MPI as mpi
 
 from comsyl.autocorrelation.AutocorrelationBuilderStrategy import AutocorrelationBuilderStrategy
-from comsyl.math.utils import trapez2D
+from comsyl.mathcomsyl.utils import trapez2D
 from comsyl.utils.Logger import log
 from comsyl.parallel.DistributionPlan import DistributionPlan
 

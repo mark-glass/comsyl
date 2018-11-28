@@ -30,11 +30,11 @@ __date__ = "20/04/2017"
 
 import numpy as np
 from comsyl.utils.Logger import log
-from comsyl.math.Eigenmoder import Eigenmoder
-from comsyl.math.MatrixBuilder import MatrixBuilder
-from comsyl.math.utils import sorted2DIndices, norm2D
-from comsyl.math.Twoform import Twoform
-from comsyl.math.TwoformVectors import TwoformVectorsEigenvectors
+from comsyl.mathcomsyl.Eigenmoder import Eigenmoder
+from comsyl.mathcomsyl.MatrixBuilder import MatrixBuilder
+from comsyl.mathcomsyl.utils import sorted2DIndices, norm2D
+from comsyl.mathcomsyl.Twoform import Twoform
+from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsEigenvectors
 
 class EigenmoderSeparation(object):
     def __init__(self, x_coordinates, y_coordinates, cut_x, cut_y):

@@ -33,10 +33,10 @@ import mpi4py.MPI as mpi
 from scipy.ndimage import gaussian_filter
 from petsc4py import PETSc
 
-from comsyl.math.utils import plot
-from comsyl.math.Eigenmoder import Eigenmoder
+from comsyl.mathcomsyl.utils import plot
+from comsyl.mathcomsyl.Eigenmoder import Eigenmoder
 from comsyl.utils.Logger import log, logProgress
-from comsyl.math.Convolution import Convolution
+from comsyl.mathcomsyl.Convolution import Convolution
 from comsyl.parallel.ParallelVector import ParallelVector
 from comsyl.parallel.DistributionPlanPETSc import DistributionPlanPETSc
 from comsyl.parallel.DistributionPlan import DistributionPlan

@@ -32,7 +32,7 @@ import numpy as np
 
 import mpi4py.MPI as mpi
 import scipy.sparse.linalg as sl
-from comsyl.math.Eigensolver import Eigensolver, Operator
+from comsyl.mathcomsyl.Eigensolver import Eigensolver, Operator
 from comsyl.parallel.ParallelLinearOperator import ParallelLinearOperator
 from comsyl.parallel.ParallelEigensolver import ParallelEigensolver
 from comsyl.parallel.ParallelVector import ParallelVector

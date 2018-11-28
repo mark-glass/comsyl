@@ -30,9 +30,9 @@ __date__ = "20/04/2017"
 
 import numpy as np
 
-from comsyl.math.TwoformVectors import TwoformVectorsEigenvectors
-from comsyl.math.utils import trapez2D
-from comsyl.math.Interpolation import coveredInterpolation
+from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsEigenvectors
+from comsyl.mathcomsyl.utils import trapez2D
+from comsyl.mathcomsyl.Interpolation import coveredInterpolation
 
 # Saves the eigenvalues and the eigenvectors
 class Twoform(object):

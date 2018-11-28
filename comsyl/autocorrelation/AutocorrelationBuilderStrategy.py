@@ -29,7 +29,7 @@ __date__ = "20/04/2017"
 
 
 import numpy as np
-from comsyl.math.Convolution import Convolution
+from comsyl.mathcomsyl.Convolution import Convolution
 from comsyl.utils.Logger import log
 
 class AutocorrelationBuilderStrategy(object):

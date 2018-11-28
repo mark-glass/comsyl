@@ -30,7 +30,7 @@ __date__ = "20/04/2017"
 
 import numpy as np
 
-from comsyl.math.utils import getFWHM, createGaussian2D
+from comsyl.mathcomsyl.utils import getFWHM, createGaussian2D
 from comsyl.utils.Logger import log
 
 

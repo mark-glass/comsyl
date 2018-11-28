@@ -38,9 +38,9 @@ from socket import gethostname
 import mpi4py.MPI as mpi
 from srwlib import *
 
-from comsyl.math.Twoform import Twoform
-from comsyl.math.TwoformVectors import TwoformVectorsWavefronts
-from comsyl.math.utils import trapez2D
+from comsyl.mathcomsyl.Twoform import Twoform
+from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsWavefronts
+from comsyl.mathcomsyl.utils import trapez2D
 from comsyl.parallel.DistributionPlan import DistributionPlan
 from comsyl.waveoptics.Wavefront import NumpyWavefront
 from comsyl.utils.Logger import logAll

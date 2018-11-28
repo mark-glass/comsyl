@@ -30,7 +30,7 @@ __date__ = "20/04/2017"
 
 import numpy as np
 
-from comsyl.math.utils import Enum
+from comsyl.mathcomsyl.utils import Enum
 
 class Unitary(Enum):
     def __init__(self):

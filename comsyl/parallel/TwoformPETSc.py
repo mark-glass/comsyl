@@ -30,7 +30,7 @@ __date__ = "20/04/2017"
 
 import numpy as np
 from petsc4py import PETSc
-from comsyl.math.Eigenmoder import Eigenmoder
+from comsyl.mathcomsyl.Eigenmoder import Eigenmoder
 from comsyl.parallel.ParallelMatrixPETSc import ParallelMatrixPETSc
 from comsyl.parallel.ParallelVector import ParallelVector
 from comsyl.parallel.DistributionPlan import DistributionPlan

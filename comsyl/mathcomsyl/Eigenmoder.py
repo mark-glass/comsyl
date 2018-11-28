@@ -31,12 +31,12 @@ __date__ = "20/04/2017"
 import numpy as np
 import scipy
 import mpi4py.MPI as mpi
-from comsyl.math.Twoform import Twoform
-from comsyl.math.TwoformVectors import TwoformVectorsParallelMatrix
+from comsyl.mathcomsyl.Twoform import Twoform
+from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsParallelMatrix
 
 from comsyl.parallel.ParallelLinearOperator import ParallelLinearOperator
 
-from comsyl.math.EigenmoderStrategy import EigenmoderStartegySLEPc
+from comsyl.mathcomsyl.EigenmoderStrategy import EigenmoderStartegySLEPc
 
 from comsyl.utils.Logger import log
 

@@ -30,7 +30,7 @@ __date__ = "20/04/2017"
 
 import numpy as np
 import sys
-from comsyl.math.utils import minAndMaxRow
+from comsyl.mathcomsyl.utils import minAndMaxRow
 
 class Wavefront(object):
     def minimal_x_coodinate(self):
