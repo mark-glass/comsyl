@@ -34,6 +34,10 @@ class CWBeamline(object):
 
         return bl
 
+
+    def propagation_code(self):
+        return "WOFRY"
+
     def add_element(self,
                     beamline_element=BeamlineElement(),
                     propagator_handler="FRESNEL_ZOOM_XY_2D",

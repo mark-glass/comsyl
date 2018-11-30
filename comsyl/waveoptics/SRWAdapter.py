@@ -35,6 +35,9 @@ from comsyl.waveoptics.Wavefront import SRWWavefront
 from comsyl.utils.Trajectory import Trajectory
 from comsyl.utils.Magneticfield import Magneticfield
 
+# added srio
+from comsyl.parallel.utils import isMaster, barrier
+from comsyl.autocorrelation.AutocorrelationFunctionPropagator import AutocorrelationFunctionPropagator
 
 class SRWAdapter(object):
     def __init__(self):
@@ -396,3 +399,45 @@ class SRWAdapter(object):
                                        None)
 
         return magnetic_field
+
+
+class CSRWBeamline(object):
+    def __init__(self,srw_beamline):
+        self._srw_beamline = srw_beamline
+
+    def propagation_code(self):
+        return "SRW"
+
+    def propagate_af(self, autocorrelation_function,
+                     directory_name="propagation_srw",
+                     af_output_file_root=None,
+                     maximum_mode=None,
+                     python_to_be_used="/users/srio/OASYS1.1/miniconda3/bin/python"):
+
+
+        propagator = AutocorrelationFunctionPropagator(self._srw_beamline)
+
+        if maximum_mode is None:
+            mode_distribution=autocorrelation_function.modeDistribution()
+            maximum_mode = mode_distribution[abs(mode_distribution)>0.00005].shape[0]
+
+        propagator.setMaximumMode(maximum_mode)
+        data_directory = "%s/%s" % (directory_name, "wavefronts")
+
+        if isMaster():
+            if not os.path.exists(directory_name):
+                os.mkdir(directory_name)
+            if not os.path.exists(data_directory):
+                os.mkdir(data_directory)
+        barrier()
+
+        propagated_filename = "%s/%s.npz" % (data_directory, "wavefront")
+        af = propagator.propagate(autocorrelation_function, propagated_filename,method="SRW",
+                                  python_to_be_used=python_to_be_used)
+
+        barrier()
+        if isMaster():
+            if af_output_file_root is not None:
+                af.save("%s.npz" % (af_output_file_root))
+
+        return af
