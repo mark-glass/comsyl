@@ -99,7 +99,7 @@ def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="pyth
 import pickle
 from wofry.propagator.propagator import PropagationManager
 from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
-from comsyl.waveoptics.WOFRYAdapter import CWBeamline
+from comsyl.waveoptics.WOFRYAdapter import ComsylWofryBeamline
 
 # initialize propagator
 mypropagator = PropagationManager.Instance()
@@ -110,7 +110,7 @@ except:
 
 beamline = pickle.load(open("./tmp/tmp%s_beamline.p"%s_id,"rb"))
 
-CWBeamline.propagate_numpy_wavefront(
+ComsylWofryBeamline.propagate_numpy_wavefront(
     "./tmp/tmp%s_in.npz"%s_id,
     "./tmp/tmp%s_out.npz"%s_id,
     beamline,mypropagator)

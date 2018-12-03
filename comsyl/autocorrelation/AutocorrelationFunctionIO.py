@@ -202,8 +202,14 @@ class AutocorrelationFunctionIO(object):
     @staticmethod
     def load(filename):
 
-        filename_npz = filename.replace(".npz", "")+".npz"
-        filename_data = filename.replace(".npz", "")+".npy"
+        filename_extension = filename.split(".")[-1]
+
+        if filename_extension == "npz":
+            filename_npz = filename.replace(".npz", "")+".npz"
+            filename_data = filename.replace(".npz", "")+".npy"
+        elif filename_extension == "npy":
+            filename_npz = filename.replace(".npy", "")+".npz"
+            filename_data = filename.replace(".npy", "")+".npy"
 
         try:
             file_content = np.load(filename_npz)

@@ -18,7 +18,7 @@ from comsyl.utils.Logger import log
 from comsyl.autocorrelation.AutocorrelationFunctionPropagator import AutocorrelationFunctionPropagator
 
 
-class CWBeamline(object):
+class ComsylWofryBeamline(object):
     def __init__(self):
         self._beamline_elements = []
         self._propagator_handlers = []
@@ -26,17 +26,13 @@ class CWBeamline(object):
 
     @classmethod
     def initialize_from_propagator_elements_object(cls,propagator_elements_object,propagator_handler="FRESNEL_ZOOM_XY_2D"):
-        bl = CWBeamline()
+        bl = ComsylWofryBeamline()
         for i in range(propagator_elements_object.get_propagation_elements_number()):
             bl.add_element(beamline_element=propagator_elements_object.get_propagation_element(i),
                            propagator_handler=propagator_handler,
                            propagator_specific_parameters=propagator_elements_object.get_propagation_element_parameter(i))
 
         return bl
-
-
-    def propagation_code(self):
-        return "WOFRY"
 
     def add_element(self,
                     beamline_element=BeamlineElement(),
@@ -46,7 +42,6 @@ class CWBeamline(object):
         self._beamline_elements.append(beamline_element)
         self._propagator_handlers.append(propagator_handler)
         self._propagator_specific_parameteres.append(propagator_specific_parameters)
-
 
     def number_of_elements(self):
         return len(self._beamline_elements)
@@ -64,9 +59,10 @@ class CWBeamline(object):
         return self.get_propagator_specific_parameters()[index]
 
     def _info(self):
-
         for i in range(self.number_of_elements()):
-            log(">>> element ",i,self._beamline_elements[i])
+            print(">>> element ",i,self._beamline_elements[i])
+            # print("   >>> coord: ",self._beamline_elements[i].get_coordinates().p())
+        print(">>> p for the first element: ",self._beamline_elements[0].get_coordinates().p())
 
     def _check_consistency(self):
         assert( len(self._beamline_elements) == len(self._propagator_specific_parameteres) )
@@ -107,7 +103,6 @@ class CWBeamline(object):
             return output_wavefronts
 
         else:
-
             assert (self._check_identical_handlers()) # chack all handler are identical
 
             propagation_elements = PropagationElements()
@@ -162,6 +157,16 @@ class CWBeamline(object):
             return wofry_wf_out_list
         else:
             return wofry_wf_out
+
+    #
+    # these methods are the common interface available in ComsylSRWBeamline and ComsylWofryBeamline
+    #
+
+    def propagation_code(self):
+        return "WOFRY"
+
+    def add_undulator_offset(self,offset):
+        self._beamline_elements[0].get_coordinates()._p += offset
 
     def propagate_af(self, autocorrelation_function,
                      directory_name="propagation_wofry",
@@ -223,7 +228,7 @@ if __name__ == "__main__":
 
     return_wavefront_list=True
 
-    wf_list = CWBeamline.propagate_numpy_wavefront(
+    wf_list = ComsylWofryBeamline.propagate_numpy_wavefront(
         "/scisoft/data/srio/COMSYL/TESTS/tmp0_hib3-3302_IN.npz",
         "/scisoft/data/srio/COMSYL/TESTS/tmp0_hib3-3302_OUT.npz",
         BEAMLINE,mypropagator,return_wavefront_list=return_wavefront_list)

@@ -401,12 +401,25 @@ class SRWAdapter(object):
         return magnetic_field
 
 
-class CSRWBeamline(object):
+class ComsylSRWBeamline(object):
     def __init__(self,srw_beamline):
         self._srw_beamline = srw_beamline
 
+    def get_native_beamline(self):
+        return self._srw_beamline
+
+    #
+    # these methods are the common interface available in ComsylSRWBeamline and ComsylWofryBeamline
+    #
+
     def propagation_code(self):
         return "SRW"
+
+    def add_undulator_offset(self,offset):
+        srw_beamline = self.get_native_beamline()
+        p = srw_beamline.arOpt[0].L
+        p_new = p + offset
+        srw_beamline.arOpt[0] = SRWLOptD(p_new)
 
     def propagate_af(self, autocorrelation_function,
                      directory_name="propagation_srw",
