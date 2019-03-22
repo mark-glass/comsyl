@@ -89,8 +89,10 @@ tmp.save("./tmp/tmp%s_out" % s_id)
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
 
 
-def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="python"):
+def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="python", keep_temp_files=False):
+
     s_id=str(mpi.COMM_WORLD.Get_rank())+"_"+gethostname()
+
     wavefront.save("./tmp/tmp%s_in"%s_id)
 
     parameter_lines = "s_id=\"%s\"" % (s_id)
@@ -99,7 +101,7 @@ def propagateWavefrontWofry(beamline, wavefront, i_mode, python_to_be_used="pyth
 import pickle
 from wofry.propagator.propagator import PropagationManager
 from wofry.propagator.propagators2D.fresnel_zoom_xy import FresnelZoomXY2D
-from comsyl.waveoptics.WOFRYAdapter import ComsylWofryBeamline
+from comsyl.waveoptics.ComsylWofryBeamline import ComsylWofryBeamline
 
 # initialize propagator
 mypropagator = PropagationManager.Instance()
@@ -123,6 +125,11 @@ ComsylWofryBeamline.propagate_numpy_wavefront(
     file.close()
 
     os.system(python_to_be_used+" ./tmp/tmp%s.py"%s_id)
+    if keep_temp_files: # keep a copy of all files
+        logAll("cp %s  %s" % ("./tmp/tmp%s_in.npz" % s_id,   "./tmp/tmp%s_in_mode%d.npz" % (s_id, i_mode)))
+        logAll("cp %s  %s" % ("./tmp/tmp%s_out.npz" % s_id, "./tmp/tmp%s_out_mode%d.npz" % (s_id, i_mode)))
+        os.system("cp %s  %s" % ("./tmp/tmp%s_in.npz" % s_id,  "./tmp/tmp%s_in_mode%d.npz" % (s_id, i_mode)))
+        os.system("cp %s  %s" % ("./tmp/tmp%s_out.npz" % s_id, "./tmp/tmp%s_out_mode%d.npz" % (s_id, i_mode)))
 
     return NumpyWavefront.load("./tmp/tmp%s_out.npz"%s_id)
 
@@ -235,7 +242,7 @@ class AutocorrelationFunctionPropagator(object):
         for i_mode in distribution_plan.localRows():
 
             for i in range(1):
-                logAll("%i doing mode: %i/%i (total: %i)" % (n_rank, i_mode, max(distribution_plan.localRows()), number_modes-1))
+                logAll("%i doing mode index: %i/%i (max mode index: %i)" % (n_rank, i_mode, max(distribution_plan.localRows()), number_modes-1))
                 if n_rank == 0:
                     sys.stdout.flush()
 

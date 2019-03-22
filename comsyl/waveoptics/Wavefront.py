@@ -347,7 +347,7 @@ class Wavefront(object):
         print("Wavefront info end")
 
     def showEField(self):
-        from comsyl.math.utils import plotSurface
+        from comsyl.mathcomsyl.utils import plotSurface
         x = np.array(self.absolute_x_coordinates())
         y = np.array(self.absolute_y_coordinates())
         z = self.E_field_as_numpy()[0, :, :, 0]

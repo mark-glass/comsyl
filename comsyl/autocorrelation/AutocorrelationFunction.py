@@ -248,8 +248,10 @@ class AutocorrelationFunction(object):
     def Twoform(self):
         return self._twoform
 
-    def diagonalizeModes(self, number_modes):
+    def diagonalizeModes(self, number_modes=None):
         from comsyl.parallel.TwoformPETSc import TwoformPETSc
+        if number_modes is None:
+            number_modes = self.Twoform().numberVectors()
         twoform_petsc = TwoformPETSc(self.Twoform())
         self._setTwoform(twoform_petsc.diagonalize(number_modes))
 
