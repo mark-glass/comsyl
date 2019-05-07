@@ -28,7 +28,10 @@ __date__ = "20/04/2017"
 
 
 
-import mpi4py.MPI as mpi
+try:
+    import mpi4py.MPI as mpi
+except:
+    pass
 
 def isMaster():
     is_master = mpi.COMM_WORLD.Get_rank() == 0

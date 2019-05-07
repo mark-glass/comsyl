@@ -34,7 +34,10 @@ import binascii
 from time import localtime, strftime, mktime
 from datetime import datetime
 from socket import gethostname
-import mpi4py.MPI as mpi
+try:
+    import mpi4py.MPI as mpi
+except:
+    pass
 from comsyl.utils.Logger import getTotalLog
 
 # before 1.3: multiply by beam energy stepwidth for energy spreaded calculations
