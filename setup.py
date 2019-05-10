@@ -39,10 +39,10 @@ setup(name='comsyl',
       packages=['comsyl'],
       install_requires=[
                         'scipy',
-                        'slepc4py',
-                        'petsc4py',
-                        'mpi4py',
                         'numpy',
                         'syned',
                        ]
      )
+#                        'slepc4py',
+#                        'petsc4py',
+#                        'mpi4py',

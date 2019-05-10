@@ -35,8 +35,13 @@ import glob, os
 
 from socket import gethostname
 
-import mpi4py.MPI as mpi
-from srwlib import *
+try:
+    import mpi4py.MPI as mpi
+except:
+    pass
+
+from oasys_srw.srwlib import *
+
 
 from comsyl.mathcomsyl.Twoform import Twoform
 from comsyl.mathcomsyl.TwoformVectors import TwoformVectorsWavefronts
@@ -58,7 +63,7 @@ def propagateWavefront(srw_beamline, wavefront, rx, drx, ry, dry, rescale_x, res
     pickle.dump(srw_beamline, open("./tmp/tmp%s_beamline.p"%s_id,"wb"))
     lines ="""
 import pickle
-from srwlib import *
+from oasys_srw.srwlib import *
 from comsyl.waveoptics.SRWAdapter import SRWAdapter
 from comsyl.waveoptics.Wavefront import NumpyWavefront, SRWWavefront
 

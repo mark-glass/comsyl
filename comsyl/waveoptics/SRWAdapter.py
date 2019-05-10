@@ -29,7 +29,7 @@ __date__ = "20/04/2017"
 
 
 import numpy as np
-from srwlib import *
+from oasys_srw.srwlib import *
 
 from comsyl.waveoptics.Wavefront import SRWWavefront
 from comsyl.utils.Trajectory import Trajectory

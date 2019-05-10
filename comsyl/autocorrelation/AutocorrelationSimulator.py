@@ -29,9 +29,13 @@ __date__ = "20/04/2017"
 
 
 import numpy as np
-import mpi4py.MPI as mpi
+try:
+    import mpi4py.MPI as mpi
+except:
+    pass
 from comsyl.parallel.utils import isMaster, barrier
-from srwlib import *
+
+from oasys_srw.srwlib import *
 
 from syned.storage_ring.electron_beam import ElectronBeam
 from comsyl.autocorrelation.AutocorrelationBuilder import AutocorrelationBuilder
