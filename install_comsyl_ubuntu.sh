@@ -30,12 +30,8 @@ source comsyl1env/bin/activate
 #
 #sudo apt -y install python3-pip
 pip3 install numpy
-#pip3 install scipy
+pip3 install scipy
 pip3 install mpi4py
-
-# install srxraylib and syned
-#pip3 install srxraylib
-#pip3 install syned
 
 
 export COMSYL_HOME=`pwd`
@@ -110,11 +106,18 @@ pip3 install .
 cd ..
 
 
+# comsyl oasys dependencies
+#pip3 install srxraylib
+#pip3 install syned
+#pip3 install oasys-srwpy
+
 
 # comsyl
 git clone https://github.com/mark-glass/comsyl
 cd comsyl
 git checkout oasys
+python3 setup.py build
+#python3 setup.py install develop  --user 
 python3 -m pip install .
 cd ..
 
@@ -132,3 +135,6 @@ echo "export PETSC_ARCH="$PETSC_ARCH >> define_env.sh
 echo "export SLEPC_DIR="$SLEPC_DIR >> define_env.sh
 chmod 777 define_env.sh
 cat define_env.sh
+
+cd comsyl/comsyl
+echo no | python calculateAutocorrelation.py configurations/septest_cm_new_u18_2m_1h.json

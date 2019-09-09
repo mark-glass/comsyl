@@ -31,12 +31,20 @@ __date__ = "20/04/2017"
 from setuptools import setup
 
 setup(name='comsyl',
-      version='0.9',
+      version='1.0.10',
       description='Coherent modes for synchrotron light',
       author='Mark Glass',
       author_email='mark.glass@esrf.fr',
       url='https://github.com/mark-glass/comsyl/',
-      packages=['comsyl'],
+      packages=['comsyl',
+                        'comsyl.autocorrelation',
+                        'comsyl.configurations',
+                        'comsyl.utils',
+                        'comsyl.mathcomsyl',
+                        'comsyl.waveoptics',
+                        'comsyl.infos',
+                        'comsyl.parallel',
+                        ],
       install_requires=[
                         'numpy',
                         'scipy',
