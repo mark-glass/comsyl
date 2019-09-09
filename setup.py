@@ -22,6 +22,31 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
+
+
+#
+# Note on installation of comsyl: 
+#
+# comsyl is not fully pip-installable, as it requires libraries for the solver
+# that are hard to compile (petsc, slepc, and the python binders petsc4py and
+# slepc4py)
+# Fot pip-building the oasys interface, these solver-dependencies have been
+# removed from the setup.py and should be built independently (see 
+# installation instructions).
+#
+# The comsyl that is pip installable can be used with oasys to load/write
+# comsyl files and therefore propagate comsyl results along the beamlines.
+#
+#
+# To create the pip installation: 
+# git checkout oasys
+# python setup.py sdist
+# python -m twine upload dist/*
+#
+
+
+
+
 __authors__ = ["M Glass - ESRF ISDD Advanced Analysis and Modelling"]
 __license__ = "MIT"
 __date__ = "20/04/2017"
@@ -49,9 +74,11 @@ setup(name='comsyl',
                         'numpy',
                         'scipy',
                         'syned',
+                        'wofry',
                         'srxraylib',
-                        'mpi4py',
                         'oasys-srwpy',
+                        'mpi4py',
+                        'h5py',
                        ]
      )
 #                        'slepc4py',
