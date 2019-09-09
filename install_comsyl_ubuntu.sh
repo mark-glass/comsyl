@@ -2,28 +2,40 @@
 
 #===============================================================================
 #
-# Script to install COMSYL on an Amazon Web Services (AWS) EC2 ubuntu 16.04 cluster
+# Script to install COMSYL on ubuntu 18.04 cluster
 #
 #===============================================================================
 #
 #
 
 
+# be sure to have a working MPI implementation and the mpicc compiler wrapper is on your search path by doing:
+# sudo apt install lam4-dev libmpich-dev  libopenmpi-dev
+
+
+
+
 # clean old stuff
 echo "Cleaning old installation files..."
-rm -rf =* comsyl petsc* slepc* 
+rm -rf =* comsyl petsc* slepc* define_env.sh 
+
+
+# create virtual evironment
+rm -rf comsyl1env
+virtualenv -p python3 --system-site-packages comsyl1env
+source comsyl1env/bin/activate
 
 #
 # mpi4py and other stuff installed with pip
 #
-sudo apt -y install python3-pip
+#sudo apt -y install python3-pip
 pip3 install numpy
-pip3 install scipy
+#pip3 install scipy
 pip3 install mpi4py
 
 # install srxraylib and syned
-pip3 install srxraylib
-pip3 install syned
+#pip3 install srxraylib
+#pip3 install syned
 
 
 export COMSYL_HOME=`pwd`
@@ -102,94 +114,13 @@ cd ..
 # comsyl
 git clone https://github.com/mark-glass/comsyl
 cd comsyl
-# git checkout syned
-python3 setup.py build
-python3 setup.py develop --user
+git checkout oasys
+python3 -m pip install .
 cd ..
 
 
 echo "All done. "
 
-
-#
-# install srw
-#
-
-rm -rf SRW
-export PYTHON_SITE_PACKAGES=`python3 -c "import site; print(site.getusersitepackages())"`
-
-echo "Cleaning old installation files..."
-sudo rm -f $PYTHON_SITE_PACKAGES/srwlpy*.so
-sudo rm -f $PYTHON_SITE_PACKAGES/uti*.py 
-sudo rm -f $PYTHON_SITE_PACKAGES/srwl_uti*.py 
-sudo rm -f $PYTHON_SITE_PACKAGES/srwlib.py
-
-echo "Downloading SRW zip. This takes time"
-wget https://github.com/ochubar/SRW/archive/master.zip > /dev/null
-unzip master.zip
-#unzip TarFiles/SRW-master.zip
-mv SRW-master SRW
-
-
-#
-# build fftw
-#
-cd SRW/ext_lib
-rm -rf  fftw-2.1.5
-tar -zxvf fftw-2.1.5.tar.gz
-cd fftw-2.1.5
-./configure --enable-float --with-pic
-cp Makefile Makefile.orig
-# add -fPIC option to CFLAGS in Makefile
-#TODO : this did not work for Mac
-sed -e "s/^CFLAGS =/CFLAGS = -fPIC/" Makefile -i
-make
-cp fftw/.libs/libfftw.a ..
-cd ../..
-echo "Done fftw"
-pwd
-
-#
-# build srw
-#
-cd cpp/gcc
-# backup
-cp Makefile Makefile.orig
-# Modify existing Makefile
-mv Makefile Makefile.tmp
-# remove existing PYFLAGS and PYPATH
-sed -i -e "/^PYFLAGS/d" Makefile.tmp 
-sed -i -e "/^PYPATH/d" Makefile.tmp
-# add the correct python path, include and lib directories
-echo "PYPATH = /usr/" >> Makefile
-#TODO make this automatic (add python3.4)
-echo "PYFLAGS = -I\$(PYPATH)/include/python3.5 -L\$(PYPATH)/lib/python3.5" >> Makefile
-cat Makefile.tmp >> Makefile
-rm Makefile.tmp
-# make (creates libsrw.a)
-rm -f libsrw.a
-make -j8 clean lib
-
-# make (creates srwlpy.so and puts it in env/work/srw_python/)
-cd ../py
-cp Makefile Makefile.orig
-#TODO check in mac, but this change seems not to be needed
-sed -i -e "s/python setup/python3 setup/" Makefile
-sed -i -e "s/gcc\/srwlpy/gcc\/srwlpy\*/" Makefile
-make python
-
-cd ../../
-
-#
-# install
-#
-cp env/work/srw_python/srwlpy*.so $PYTHON_SITE_PACKAGES
-cp env/work/srw_python/uti*.py $PYTHON_SITE_PACKAGES
-cp env/work/srw_python/srwl_uti*.py $PYTHON_SITE_PACKAGES
-cp env/work/srw_python/srwlib.py $PYTHON_SITE_PACKAGES
-#
-cd ..
-echo "All done for SRW." 
 
 #
 # Create PETSc/SLEPc environment file

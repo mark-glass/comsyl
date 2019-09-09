@@ -41,7 +41,7 @@ setup(name='comsyl',
                         'numpy',
                         'scipy',
                         'syned',
-                        'sr-xraylib',
+                        'srxraylib',
                         'mpi4py',
                         'oasys-srwpy',
                        ]
