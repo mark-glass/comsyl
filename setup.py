@@ -38,9 +38,12 @@ setup(name='comsyl',
       url='https://github.com/mark-glass/comsyl/',
       packages=['comsyl'],
       install_requires=[
-                        'scipy',
                         'numpy',
+                        'scipy',
                         'syned',
+                        'sr-xraylib',
+                        'mpi4py',
+                        'oasys-srwpy',
                        ]
      )
 #                        'slepc4py',
