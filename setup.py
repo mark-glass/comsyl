@@ -78,9 +78,13 @@ setup(name='comsyl',
                         'srxraylib',
                         'oasys-srwpy',
                         'mpi4py',
-                        'h5py',
-                       ]
+                        'h5py', #  slepc4py', petsc4py', mpi4py',
+                       ],
+      package_data=[
+          'configurations':["septest_cm_new_u18_2m_1h.json"],
+          'calculations':["readme.txt"],
+                       ],
+      setup_requires=[
+                        'septuptools',
+                       ],
      )
-#                        'slepc4py',
-#                        'petsc4py',
-#                        'mpi4py',
