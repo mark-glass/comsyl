@@ -30,15 +30,16 @@
 # comsyl is not fully pip-installable, as it requires libraries for the solver
 # that are hard to compile (petsc, slepc, and the python binders petsc4py and
 # slepc4py)
-# Fot pip-building the oasys interface, these solver-dependencies have been
-# removed from the setup.py and should be built independently (see 
-# installation instructions).
+# For pip-building the oasys interface, these solver-dependencies have been
+# removed from the setup.py and should be built independently
+# (use, e.g., scripts/install_comsyl_solver.sh).
 #
 # The comsyl that is pip installable can be used with oasys to load/write
 # comsyl files and therefore propagate comsyl results along the beamlines.
 #
 #
 # To create the pip installation: 
+# rm -rf dist
 # git checkout oasys
 # python setup.py sdist
 # python -m twine upload dist/*
