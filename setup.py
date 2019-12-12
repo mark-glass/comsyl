@@ -57,7 +57,7 @@ __date__ = "20/04/2017"
 from setuptools import setup
 
 setup(name='comsyl',
-    version='1.0.12',
+    version='1.0.13',
     description='Coherent modes for synchrotron light',
     author='Mark Glass',
     author_email='mark.glass@esrf.fr',
@@ -77,7 +77,6 @@ setup(name='comsyl',
         'wofry',
         'srxraylib',
         'oasys-srwpy',
-        'mpi4py',
         'h5py', #  slepc4py', petsc4py', mpi4py',
         ],
     package_data={
