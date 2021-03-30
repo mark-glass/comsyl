@@ -43,6 +43,7 @@ class AutocorrelationSimulatorConfiguration(object):
         available = OrderedDict([
                                  ("lattice_name", "Name of the lattice to be used. See in available lattices in infos/Lattices.py"),
                                  ("undulator_name", "Name of the undulator to be used. See in available undulators in infos/Undulators.py"),
+                                 ("syned_lightsource", "syned lightsource file. If not empty use this and ignore lattice_name and undulator_name"),
                                  ("sampling_factor", "Sampling point desnity. Higher is more accurate. Memory scales with N^4 of this parameter. It is one of the primary convergence parameters."),
                                  ("beam_energies", "Number of energies to sample energy spread. 0 means no energy spread."),
                                  ("number_modes", "The number of coherent modes requested to calculated. They will be in descending order according to their eigenvalues/intensity. For convergence the sum of eigenvalues should sum up to the total intensity."),
@@ -107,6 +108,7 @@ class AutocorrelationSimulatorConfiguration(object):
         defaults = OrderedDict([
                                 ("lattice_name", "new"),
                                 ("undulator_name", "esrf_u18_2m"),
+                                ("syned_lightsource", ""),
                                 ("sampling_factor", 2.0),
                                 ("beam_energies", 31),
                                 ("number_modes", 500),
@@ -139,6 +141,9 @@ class AutocorrelationSimulatorConfiguration(object):
 
     def undulatorName(self):
         return self.byName("undulator_name")
+
+    def synedLightSource(self):
+        return self.byName("syned_lightsource")
 
     def samplingFactor(self):
         return float(self.byName("sampling_factor"))

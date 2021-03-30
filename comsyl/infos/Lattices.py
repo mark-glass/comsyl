@@ -118,6 +118,56 @@ alba = ElectronBeam(energy_in_GeV=3.0,
                      moment_yyp   =0.0,
                      energy_spread=1e-03)
 
+elettra1 = ElectronBeam(energy_in_GeV=2.0,
+                     current      =0.2,
+                     moment_xx    =(0.2529e-3)**2,  #<(x-x0)^2>
+                     moment_yy    =(0.01844e-3)**2, #<(y-y0)^2>
+                     moment_xpxp  =(0.02881e-3)**2, #<(x'-x'0)^2>
+                     moment_ypyp  =(5.235e-6)**2,   #<(y'-y'0)^2>
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=0.80e-03)
+
+elettra2_E24B = ElectronBeam(energy_in_GeV=2.0,
+                     current      =0.2,
+                     moment_xx    = (8.071e-05)**2, #<(x-x0)^2>
+                     moment_yy    =(4.66e-06)**2,   #<(y-y0)^2>
+                     moment_xpxp  =(8.968e-06)**2,  #<(x'-x'0)^2>
+                     moment_ypyp  =(1.553e-06)**2,  #<(y'-y'0)^2>
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=0.80e-03)
+
+elettra2_E26B = ElectronBeam(energy_in_GeV=2.0,
+                     current      =0.2,
+                     moment_xx    =(5.545e-05)**2, #<(x-x0)^2>
+                     moment_yy    =(2.784e-06)**2, #<(y-y0)^2>
+                     moment_xpxp  =(4.508e-06)**2, #<(x'-x'0)^2>
+                     moment_ypyp  =(8.98e-07)**2,  #<(y'-y'0)^2>
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=0.80e-03)
+
+alsu = ElectronBeam(energy_in_GeV=2.0,
+                     current      =0.5,
+                     moment_xx    =(12.1e-6)**2, #<(x-x0)^2>
+                     moment_yy    =(14.7e-6)**2, #<(y-y0)^2>
+                     moment_xpxp  =(5.7e-6)**2, #<(x'-x'0)^2>
+                     moment_ypyp  =(4.7e-6)**2,  #<(y'-y'0)^2>
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=1.0e-03)
+
+apsu = ElectronBeam(energy_in_GeV=6.0,
+                     current      =0.2,
+                     moment_xx    =(14.8e-6)**2,
+                     moment_yy    =(3.7e-6)**2,
+                     moment_xpxp  =(2.8e-6)**2,
+                     moment_ypyp  =(1.5e-6)**2,
+                     moment_xxp   =0.0,
+                     moment_yyp   =0.0,
+                     energy_spread=1.38e-03)
+
 #
 #
 # round_new_Ob = SigmaWaist(sigma_x=0.275*27.2e-6,
@@ -350,6 +400,11 @@ def latticeByName(name):
                 "ebs_S28D": ebs_S28D,
                 "correct_new": correct_new_Ob,
                 "alba": alba,
+                "elettra1":elettra1,
+                "elettra2_E24B":elettra2_E24B,
+                "elettra2_E26B":elettra2_E26B,
+                "alsu":alsu,
+                "apsu":apsu,
                 # "round_new": round_new_Ob,
                 # "new_alpha":new_Ob_alpha,
                 # "correct_new_alpha":correct_new_Ob_alpha,

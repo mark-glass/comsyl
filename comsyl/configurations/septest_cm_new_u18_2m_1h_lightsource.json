@@ -1,0 +1,28 @@
+{
+    "lattice_name": "",
+    "undulator_name": "",
+    "syned_lightsource": "http://ftp.esrf.fr/pub/scisoft/syned/lightsources/ESRF_ID02_EBS_PPU21.4_1.json",
+    "sampling_factor": 2.5,
+    "beam_energies": 1,
+    "number_modes": 600,
+    "resonance_detuning": 1.0,
+    "exit_slit_wavefront": {
+        "minimal_size_horizontal": 8.5e-05,
+        "minimal_size_vertical": 8.5e-05,
+        "maximal_size_vertical": 8.5e-05,
+        "maximal_size_horizontal": 8.5e-05
+    },
+    "source_wavefront": {
+        "minimal_size_horizontal": 15e-05,
+        "minimal_size_vertical": 10e-05,
+        "maximal_size_vertical": 10e-05,
+        "maximal_size_horizontal": 15e-05
+    },
+    "optional": {
+        "tag": "",
+        "use_two_step_method": "false",
+        "virtual_source_position": "entrance",
+        "do_not_use_convolutions": "false",
+        "independent_dimensions": "true"
+    }
+}
