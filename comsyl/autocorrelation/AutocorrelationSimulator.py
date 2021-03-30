@@ -56,6 +56,7 @@ from comsyl.waveoptics.WavefrontBuilder import WavefrontBuilder, VIRTUAL_SOURCE_
 from comsyl.waveoptics.GaussianWavefrontBuilder import GaussianWavefrontBuilder
 from comsyl.autocorrelation.SigmaMatrix import SigmaMatrixFromCovariance
 
+from syned.util.json_tools import load_from_json_file, load_from_json_url
 
 class AutocorrelationSimulator(object):
     def __init__(self):
@@ -406,9 +407,30 @@ class AutocorrelationSimulator(object):
         self._setConfiguration(configuration)
         filename = self._determineFilename()
 
-        lattice_name = configuration.latticeName()
-        electron_beam = latticeByName(lattice_name)
-        undulator = undulatorByName(configuration.undulatorName())
+        flag_syned_lightsource = False
+        try:
+            syned_file = configuration.synedLightSource()
+            if syned_file != "":
+                flag_syned_lightsource = True
+        except:
+            pass
+
+        if flag_syned_lightsource:
+            if syned_file.find("//") != -1:
+                lightsource = load_from_json_url(syned_file)
+            else:
+                lightsource = load_from_json_file(syned_file)
+            electron_beam = lightsource.get_electron_beam()
+            undulator = lightsource.get_magnetic_structure()
+            log("Light source from syned: %s " % syned_file)
+            log(electron_beam.info())
+            log(undulator.info())
+        else:
+            lattice_name = configuration.latticeName()
+            electron_beam = latticeByName(lattice_name)
+            undulator = undulatorByName(configuration.undulatorName())
+            log("Light source from comsyl lattice_name: %s, undulator_name: %s " % (lattice_name, configuration.undulatorName()))
+
 
         info = AutocorrelationInfo()
         info.logStart()
